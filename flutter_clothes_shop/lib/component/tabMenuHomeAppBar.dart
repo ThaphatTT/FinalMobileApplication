@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-
+import 'package:flutter_clothes_shop/component/component_part/homeScreen.dart';
 class TabMenuHomeAppBar extends StatelessWidget {
   const TabMenuHomeAppBar({super.key});
 
@@ -18,15 +18,15 @@ class TabMenuHomeAppBar extends StatelessWidget {
           ),
         bottom: const TabBar(
           tabs: [
-            Text('MEN'),
-            Text('WOMEN'),
-            Text('KIDS'),
+            Text('Shop All'),
+            Text('Shoes'),
+            Text('Apparel'),
           ],
       ),
       ),
       body: TabBarView(
         children: [
-          Text('Yooo'),
+          HomeScreen(),
           Text('Yooo'),
           Text('Yooo'),
           ],
