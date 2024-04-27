@@ -98,6 +98,7 @@ class LoginScreenState extends State<Profile_HomeScreen>{
                   height: 50,
                   width: 250,
                   child: ElevatedButton(
+                    
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                     ),
@@ -115,6 +116,7 @@ class LoginScreenState extends State<Profile_HomeScreen>{
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
+                        
                         ),
                       ),
                     ),

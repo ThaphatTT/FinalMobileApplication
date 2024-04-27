@@ -15,7 +15,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _birthdayController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _genderController = TextEditingController();
   final _addressController = TextEditingController();
   String dropdownValue = 'Option 1';
 
@@ -168,10 +167,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      minLines: 2, // any number you need (It works as the rows for the textarea)
+                      minLines: 2,
+                      controller : _addressController,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
-                      controller: _addressController,
                       decoration: InputDecoration(
                               labelText: 'Address',
                               border: OutlineInputBorder()

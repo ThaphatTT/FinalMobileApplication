@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_clothes_shop/component/tabMenuHomeAppBar.dart';
 import 'package:flutter_clothes_shop/component/profile_screen.dart';
+import 'package:flutter_clothes_shop/component/component_part/createProduct.dart';
+
 class TabMenu extends StatelessWidget {
   const TabMenu({super.key});
 
@@ -42,7 +44,12 @@ class _TabMenuButton extends State<TabMenuButton> {
       floatingActionButton : FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Colors.white,
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context)=> const createProductScreen())
+          );
+        },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
