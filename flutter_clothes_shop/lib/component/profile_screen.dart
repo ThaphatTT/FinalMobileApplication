@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_clothes_shop/component/component_part/registerScreen.dart';
+import 'package:flutter_clothes_shop/component/component_part/profile_detail.dart';
+import 'package:flutter_clothes_shop/component/tabMenu.dart';
 
 class Profile_HomeScreen extends StatefulWidget {
-  const Profile_HomeScreen({super.key});
+  final Function onLoginSuccess;
+  const Profile_HomeScreen({super.key, required this.onLoginSuccess});
 
   @override
   State <StatefulWidget> createState(){
@@ -98,7 +101,6 @@ class LoginScreenState extends State<Profile_HomeScreen>{
                   height: 50,
                   width: 250,
                   child: ElevatedButton(
-                    
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                     ),
@@ -109,6 +111,7 @@ class LoginScreenState extends State<Profile_HomeScreen>{
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Email : $email \nPassword : $password')),
                         );
+                        widget.onLoginSuccess();
                       }
                     },
                     child: const Text(

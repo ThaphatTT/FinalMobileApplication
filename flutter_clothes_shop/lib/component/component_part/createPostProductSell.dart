@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 
-class createProductScreen extends StatefulWidget {
-  const createProductScreen({Key? key}) : super(key: key);
+class createPostProductScreen extends StatefulWidget {
+  const createPostProductScreen({Key? key}) : super(key: key);
 
   @override
-  _createProductScreenState createState() => _createProductScreenState();
+  _createPostProductScreenState createState() => _createPostProductScreenState();
 }
 
-class _createProductScreenState extends State<createProductScreen> {
+class _createPostProductScreenState extends State<createPostProductScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _brand;
   String? _name;
   String? _size;
   String? _price;
-  String? _imagePath;
+  List<String>? _imagePaths;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create a Product'),
+        title: Text('Create a Your Order'),
       ),
       body: Form(
         key: _formKey,
@@ -82,40 +83,46 @@ class _createProductScreenState extends State<createProductScreen> {
               },
             ),
             Column(
-        children: [
-          ElevatedButton(
-            onPressed: pickFile,
-            child: Text('Attach Image'),
-          ),
-          // แสดงผลภาพที่เลือก (หากมี)
-          if (_imagePath != null) 
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.file(
-                File(_imagePath!),
-                width: 200,
-                height: 200,
-                fit: BoxFit.cover,
-              ),
+              children: [
+                ElevatedButton(
+                  onPressed: pickFiles,
+                  child: Text('Attach Image'),
+                ),
+                if (_imagePaths != null) 
+                  ..._imagePaths!.map((paths) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.file(
+                      File(paths),
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+                  )).toList(),
+              ],
             ),
-        ],
-      ),
           ],
         ),
       ),
     );
   }
-    Future<void> pickFile() async {
-      FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    Future<void> pickFiles() async {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+
       if (result != null) {
-          // รับเส้นทางไฟล์
-          String? filePath = result.files.single.path;
-          if (filePath != null) {
-              // อัปเดตเส้นทางไฟล์ใน State
-              setState(() {
-                  _imagePath = filePath;
-              });
+        // รับเส้นทางไฟล์
+        List<String> filePaths = result.paths.map((path) => path!).toList();
+        if (filePaths != null) {
+          setState(() {
+
+          if (_imagePaths == null) {
+            _imagePaths = filePaths;
+          } else {
+            _imagePaths!.addAll(filePaths);
           }
+        });
+        }
       }
-  }
+    }
+
 }

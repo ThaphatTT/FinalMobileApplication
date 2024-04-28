@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 
+import 'package:flutter_clothes_shop/component/component_part/createPostProductSell.dart';
+import 'package:flutter_clothes_shop/component/component_part/buyProduct.dart';
 
 class AttractionDetailPage extends StatefulWidget {
   final int id;
@@ -352,7 +354,10 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                         borderRadius: BorderRadius.all(Radius.circular(5.5)),
                         child: InkWell(
                           onTap: () {
-
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => createPostProductScreen())
+                            );
                           },
                           child: Container(
                             width: 150,
@@ -375,7 +380,10 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                         borderRadius: BorderRadius.all(Radius.circular(5.5)),
                         child: InkWell(
                           onTap: () {
-
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context)=> BuyProduct())
+                            );
                           },
                           child: Container(
                             width: 150,
