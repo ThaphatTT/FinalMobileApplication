@@ -253,27 +253,27 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                                 height: 25,
                                 width: 50,
                             ),
-                           Container(
-                            margin : EdgeInsets.fromLTRB(25, 0, 0, 0),
-                            child: Column(
-                              children: [
-                                Text(
-                              'Standard Delivery',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              ),
+                          Container(
+                          margin : EdgeInsets.fromLTRB(25, 0, 0, 0),
+                          child: Column(
+                            children: [
                               Text(
-                              'Ship via logistic partner (7-14 days)',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.grey,
-                              ),
-                              )
-                              ],)
-                           )
+                            'Standard Delivery',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            ),
+                            Text(
+                            'Ship via logistic partner (7-14 days)',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey,
+                            ),
+                            )
+                            ],)
+                          )
                           ],
                         ),
                       ),
@@ -286,9 +286,118 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                     indent: 1,
                     endIndent: 1,
                   ),
+                  Container(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                          width: 200,
+                          height: 30,
+                          color: Colors.grey[200],
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
+                                child: Icon(Icons.health_and_safety_rounded),
+                              ),
+                              Container(
+                              child: Center(
+                                  child: Text(
+                                    '100% Authentic Guarantee',
+                                    style: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold
+                                    )
+                                    ),
+                                ),
+                            )
+                          ],),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                          width: 200,
+                          height: 30,
+                          color: Colors.grey[200],
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
+                                child: Icon(Icons.safety_check),
+                              ),
+                              Container(
+                              child: Center(
+                                  child: Text(
+                                    'Anti Fraudulent transaction',
+                                    style: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold
+                                    )
+                                    ),
+                                ),
+                            )
+                          ],),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                    child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Material(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.all(Radius.circular(5.5)),
+                        child: InkWell(
+                          onTap: () {
+
+                          },
+                          child: Container(
+                            width: 150,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                'Sell',
+                                style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                                )
+                                ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Material(
+                        color: Colors.green[600],
+                        borderRadius: BorderRadius.all(Radius.circular(5.5)),
+                        child: InkWell(
+                          onTap: () {
+
+                          },
+                          child: Container(
+                            width: 150,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                'Buy',
+                                style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                                )
+                                ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],),
+                  )
                 ],
               ))
-              ) 
+              ),
               );
   }
 }
