@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_clothes_shop/component/component_part/buyProductVerify.dart';
 
 class BuyProduct extends StatefulWidget {
   const BuyProduct({super.key});
@@ -18,7 +19,10 @@ class _BuyProductState extends State<BuyProduct> {
       body: SingleChildScrollView(
         child :GestureDetector( 
           onTap: () {
-            
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (context) => buyProductVerify())
+              );
           },
           child: Column(
             children: [
@@ -33,13 +37,13 @@ class _BuyProductState extends State<BuyProduct> {
                       width:  150,
                       child: Image.asset('assets/images/coat_hanger.png'),
                     ),
-                    Container(
+                    Flexible(
                       child: Column(
                         children: [
                           Container(
                             margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
                             child: Text(
-                              'Tite',
+                              'Conditon',
                               ),
                           ),
                           Container(

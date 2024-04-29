@@ -30,13 +30,13 @@ class _createPostProductScreenState extends State<createPostProductScreen> {
           padding: EdgeInsets.all(16.0),
           children: <Widget>[
             DropdownButtonFormField<String>(
-              hint: Text('Select Brand'),
+              hint: Text('Select Condition'),
               onChanged: (value) {
                 setState(() {
                   _brand = value;
                 });
               },
-              items: ['Brand 1', 'Brand 2', 'Brand 3']
+              items: ['Brand New', 'Pre-owened']
                   .map((label) => DropdownMenuItem(
                         child: Text(label),
                         value: label,
@@ -44,13 +44,13 @@ class _createPostProductScreenState extends State<createPostProductScreen> {
                   .toList(),
             ),
             DropdownButtonFormField<String>(
-              hint: Text('Select Name'),
+              hint: Text('Select Equipment'),
               onChanged: (value) {
                 setState(() {
                   _name = value;
                 });
               },
-              items: ['Name 1', 'Name 2', 'Name 3']
+              items: ['Box', 'Not have a Box']
                   .map((label) => DropdownMenuItem(
                         child: Text(label),
                         value: label,
@@ -100,6 +100,31 @@ class _createPostProductScreenState extends State<createPostProductScreen> {
                   )).toList(),
               ],
             ),
+            Container(
+              child: Material(
+                color: Colors.black,
+                borderRadius: BorderRadius.all(Radius.circular(5.5)),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: 300,
+                    height: 50,
+                    child: Center(
+                      child:Text(
+                        'Confirm payment  ',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      )
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

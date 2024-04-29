@@ -13,7 +13,6 @@ class _createProductScreenState extends State<createProductScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _brand;
   String? _name;
-  String? _size;
   String? _price;
   String? _imagePath;
 
@@ -56,20 +55,6 @@ class _createProductScreenState extends State<createProductScreen> {
                       ))
                   .toList(),
             ),
-            DropdownButtonFormField<String>(
-              hint: Text('Select Size'),
-              onChanged: (value) {
-                setState(() {
-                  _size = value;
-                });
-              },
-              items: ['Size 1', 'Size 2', 'Size 3']
-                  .map((label) => DropdownMenuItem(
-                        child: Text(label),
-                        value: label,
-                      ))
-                  .toList(),
-            ),
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Price',
@@ -82,24 +67,24 @@ class _createProductScreenState extends State<createProductScreen> {
               },
             ),
             Column(
-        children: [
-          ElevatedButton(
-            onPressed: pickFile,
-            child: Text('Attach Image'),
-          ),
-          // แสดงผลภาพที่เลือก (หากมี)
-          if (_imagePath != null) 
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.file(
-                File(_imagePath!),
-                width: 200,
-                height: 200,
-                fit: BoxFit.cover,
-              ),
+              children: [
+                ElevatedButton(
+                  onPressed: pickFile,
+                  child: Text('Attach Image'),
+                ),
+                // แสดงผลภาพที่เลือก (หากมี)
+                if (_imagePath != null) 
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.file(
+                      File(_imagePath!),
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
           ],
         ),
       ),
