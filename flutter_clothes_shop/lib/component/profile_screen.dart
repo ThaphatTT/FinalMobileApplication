@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:flutter_clothes_shop/component/component_part/registerScreen.dart';
 import 'package:flutter_clothes_shop/component/component_part/profile_detail.dart';
 import 'package:flutter_clothes_shop/component/tabMenu.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile_HomeScreen extends StatefulWidget {
   final Function onLoginSuccess;
@@ -105,12 +108,8 @@ class LoginScreenState extends State<Profile_HomeScreen>{
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      final email = _emailController.text;
-                      final password = _passwordController.text;
                       if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Email : $email \nPassword : $password')),
-                        );
+                        login();
                         widget.onLoginSuccess();
                       }
                     },
@@ -153,4 +152,25 @@ class LoginScreenState extends State<Profile_HomeScreen>{
       )
     );
   }
+
+
+  Future<void> login() async {
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    if (_formKey.currentState!.validate()) {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:4000/login'),
+        body: {'email': email, 'password': password},
+      );
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        final token = responseBody['token'];
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
+        widget.onLoginSuccess();
+      } else {
+      }
+    }
+  }
+
 }

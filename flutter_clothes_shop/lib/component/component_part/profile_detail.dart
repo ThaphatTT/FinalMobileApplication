@@ -5,6 +5,8 @@ import 'package:flutter_clothes_shop/component/component_part/edit_ShippingAddre
 import 'package:flutter_clothes_shop/component/component_part/orderBuy.dart';
 import 'package:flutter_clothes_shop/component/component_part/orderSell.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class profileDetail extends StatefulWidget {
   final Function onLogout;
 

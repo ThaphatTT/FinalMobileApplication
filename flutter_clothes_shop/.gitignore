@@ -10,6 +10,7 @@
 .svn/
 migrate_working_dir/
 server/node_modules
+server/.env
 # IntelliJ related
 *.iml
 *.ipr

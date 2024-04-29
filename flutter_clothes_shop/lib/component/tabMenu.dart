@@ -51,7 +51,7 @@ class _TabMenuButton extends State<TabMenuButton> {
   Widget build(BuildContext context) {
    final _widgetOptions = <Widget>[
       TabMenuHomeAppBar(),
-      _isLoggedIn ? profileDetail(onLogout: onLogout) : Profile_HomeScreen(onLoginSuccess: onLoginSuccess), // ใช้ Conditional Operator ที่นี่
+      _isLoggedIn ? profileDetail(onLogout: onLogout) : Profile_HomeScreen(onLoginSuccess: onLoginSuccess),
     ];
 
     return Scaffold(

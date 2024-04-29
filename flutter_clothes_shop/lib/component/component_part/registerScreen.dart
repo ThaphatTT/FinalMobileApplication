@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_clothes_shop/component/tabMenu.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,11 +21,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final _birthdayController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
-  String dropdownValue = 'Option 1';
+  String dropdownValue = 'male';
 
   @override
   Widget build(BuildContext context) {
-    List<String> dropdownOptions = ['Option 1', 'Option 2', 'Option 3'];
+    List<String> dropdownOptions = ['male', 'female',];
     return Scaffold(
       appBar: AppBar(
         title: Text('Register'),
@@ -218,10 +223,29 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // If the form is valid, display a snackbar. In the real world,
-                      // you'd often call a server or save the information in a database.
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Registration Successful')),
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Confirmation'),
+                            content: Text('Please check your data is correct, Do you want to register?'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('YES'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  registerUser();
+                                },
+                              ),
+                              TextButton(
+                                child: Text('NO'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          );
+                        },
                       );
                     }
                   },
@@ -230,7 +254,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -251,5 +275,38 @@ class _RegisterPageState extends State<RegisterPage> {
           _birthdayController.text = _picked.toString().split(" ")[0];
         });
       }
+  }
+  Future<void> registerUser() async{
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:4000/createUser'),
+      headers: <String, String>{
+        'Content-Type' : 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String,String>{
+        'email' : _emailController.text ,
+        'password' : _passwordController.text,
+        'fname' : _fnameController.text,
+        'lname' : _lnameController.text,
+        'birthday' : _birthdayController.text,
+        'mphone' : _phoneController.text,
+        'sex' : dropdownValue,
+        'address' : _addressController.text
+      })
+    );
+
+    if(response.statusCode == 200){
+      print('User created successed!');
+      var data = jsonDecode(response.body);
+      if(data['status'] == 'ok'){
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TabMenu()
+            )
+        );
+      }
+    }else{
+      print('Failed to create a user');
+    }
   }
 }
