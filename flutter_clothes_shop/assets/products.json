@@ -1,0 +1,46 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "type" :"Shirts",
+      "name": "The North Face (White Shirt)",
+      "price": 1000,
+      "image": "https://drx7pnvuocl0e.cloudfront.net/media/catalog/product/cache/e8f0cefff9f026cc0879ddcb20b4f989/8/8/88btfn4-a_1.jpg"
+    },
+    {
+      "id": 2,
+      "type" :"Shirts",
+      "name": "Shirt White",
+      "price": 2000,
+      "image": "https://www.lacoste.co.th/pub/media/catalog/product/w/3/w3_th2504_70v_th2504_70v_24.jpg?auto=webp&format=webp"
+    },
+    {
+      "id": 3,
+      "type" :"Jeans",
+      "name": "Blue Jean",
+      "price": 3000,
+      "image": "https://admin.kaufmannstatic.com/Images/179635_blue;%5B;heavy;%5B;stone;%5B;wash_01-T20221017081559.jpg?i=179635_blue;%5B;heavy;%5B;stone;%5B;wash_01-T20221017081559.jpg&w=850&h=850&bgcolor=f1f1f1"
+    },
+    {
+      "id": 4,
+      "type" :"Short Jeans",
+      "name": "Blue Short Jean",
+      "price": 4000,
+      "image": "https://i5.walmartimages.com/seo/Polo-Ralph-Lauren-Boy-s-Denim-100-Cotton-Jean-Shorts-Elver-Blue-6_7a7446d1-3317-4f4f-9e2b-cb957a98feb3.62605ee3a0bb3099cef7beb2154015a9.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF"
+    },
+    {
+      "id": 5,
+      "type" :"Caps",
+      "name": "New Era Chicago",
+      "price": 5000,
+      "image": "https://neweracap.co.th/cdn/shop/products/ssvnth.zone-1694774248-13773974_9FIFTY_FW23_NEW-ERA-MORNING-CLUB_BLACK_3QL_1200x.png?v=1698323144"
+    },
+    {
+      "id": 6,
+      "type" :"Sportswear",
+      "name": "Nike Sportwear Tech",
+      "price": 6000,
+      "image": "https://images.stockx.com/images/Nike-Sportswear-Tech-Fleece-Windrunner-Full-Zip-Hoodie-Light-University-Red-Heather-Black-v4.jpg?fit=fill&bg=FFFFFF&w=480&h=320&fm=jpg&auto=compress&dpr=2&trim=color&updated_at=1694209328&q=60"
+    }
+  ]
+}
