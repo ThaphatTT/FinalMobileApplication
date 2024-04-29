@@ -85,6 +85,31 @@ class _createProductScreenState extends State<createProductScreen> {
                   ),
               ],
             ),
+            Container(
+              child: Material(
+                color: Colors.black,
+                borderRadius: BorderRadius.all(Radius.circular(5.5)),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: 300,
+                    height: 50,
+                    child: Center(
+                      child:Text(
+                        'Confirm to create a product thumbnail',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      )
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

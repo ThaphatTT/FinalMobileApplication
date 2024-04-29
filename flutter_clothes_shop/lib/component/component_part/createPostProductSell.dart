@@ -113,7 +113,7 @@ class _createPostProductScreenState extends State<createPostProductScreen> {
                     height: 50,
                     child: Center(
                       child:Text(
-                        'Confirm payment  ',
+                        'Confirm sell your product  ',
                         style: TextStyle(
                           fontSize: 18.0,
                           color: Colors.white,
