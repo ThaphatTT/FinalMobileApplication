@@ -5,6 +5,11 @@ import 'package:flutter_clothes_shop/component/profile_screen.dart';
 import 'package:flutter_clothes_shop/component/component_part/createProduct.dart';
 import 'package:flutter_clothes_shop/component/component_part/profile_detail.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+
 class TabMenu extends StatelessWidget {
   const TabMenu({super.key});
 
@@ -26,6 +31,8 @@ class TabMenuButton extends StatefulWidget {
 class _TabMenuButton extends State<TabMenuButton> {
   int _selectedIndex = 0;
   bool _isLoggedIn = false;
+  bool _isAdmin = false;
+  
 
   void _onItemTapped(int index) {
     setState(() {
@@ -33,16 +40,20 @@ class _TabMenuButton extends State<TabMenuButton> {
     });
   }
 
- void onLoginSuccess() {
+ void onLoginSuccess() async {
     setState(() {
       _isLoggedIn = true;
       _selectedIndex = 1;
     });
+    _isAdmin = await isAdmin();
   }
 
-  void onLogout() {
+  void onLogout() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
     setState(() {
       _isLoggedIn = false;
+      _isAdmin = false;
       _selectedIndex = 1;
     });
   }
@@ -58,7 +69,7 @@ class _TabMenuButton extends State<TabMenuButton> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      floatingActionButton : FloatingActionButton(
+      floatingActionButton : _isAdmin ? FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Colors.white,
         onPressed: (){
@@ -67,7 +78,7 @@ class _TabMenuButton extends State<TabMenuButton> {
             MaterialPageRoute(builder: (context)=> const createProductScreen())
           );
         },
-        ),
+        ) : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -86,4 +97,31 @@ class _TabMenuButton extends State<TabMenuButton> {
       ),
     );
   }
+  Future<bool> isAdmin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null || token.isEmpty) {
+    return false;
+    }
+    final decodedToken = JwtDecoder.decode(token);
+    final userId = decodedToken['id'];
+    final response = await http.get(
+    Uri.parse('http://10.0.2.2:4000/user/permission/$userId'),
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      final user = responseBody['user'];
+      final role = user['permission'];
+      if(role == 1) {
+        return true;
+      }else{
+        return false;
+      }
+    } else {
+      print('server status non-respone');
+      return false;
+    }
+  }
+
 }

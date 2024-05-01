@@ -52,13 +52,18 @@ app.post('/login', (req, res) => {
   pool.getConnection((err,connection)=>{
   if(err) throw err;
   const { email, password } = req.body;
-  const sql = 'SELECT email,password FROM users WHERE email = ? AND password = ?'
+  const sql = 'SELECT id, email, password FROM users WHERE email = ? AND password = ?'
   pool.query(sql, [email, password], (error, results) => {
     if (error) throw error;
     if (results.length > 0) {
       const user = results[0];
-      const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: '1h' });
-      res.send({ message: 'Login successful', user, token });
+      console.log(user);
+      const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: '12h' });
+      res.send({ 
+        message: 'Login successful', 
+        user, 
+        token 
+      });
     } else {
       res.status(401).send({ message: 'Invalid email or password' });
     }
@@ -94,6 +99,50 @@ app.post('/createUser',(req,res) =>{
       connection.release();
     })
   });
+});
+
+app.get('/user/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT email, password, fname, lname, birthday, mphone, sex, address, permission FROM users WHERE id = ?'
+    pool.query(sql, [id], (error, results) => {
+      if (error) throw error;
+      if (results.length > 0) {
+        const user = results[0];
+        res.send({ 
+          message: 'User data retrieved', 
+          user 
+        });
+        console.log(user);
+      } else {
+        res.status(404).send({ message: 'User not found' });
+      }
+    });
+    connection.release();
+  })
+});
+
+app.get('/user/permission/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT  id, permission FROM users WHERE id = ?'
+    pool.query(sql, [id], (error, results) => {
+      if (error) throw error;
+      if (results.length > 0) {
+        const user = results[0];
+        res.send({ 
+          message: 'User data retrieved', 
+          user 
+        });
+        console.log(user);
+      } else {
+        res.status(404).send({ message: 'User not found' });
+      }
+    });
+    connection.release();
+  })
 });
 
 app.listen(port, ()=> console.log((`listen on port ${port}`)));

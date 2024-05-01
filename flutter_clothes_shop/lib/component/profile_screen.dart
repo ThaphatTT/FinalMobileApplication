@@ -110,7 +110,6 @@ class LoginScreenState extends State<Profile_HomeScreen>{
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         login();
-                        widget.onLoginSuccess();
                       }
                     },
                     child: const Text(
@@ -157,10 +156,12 @@ class LoginScreenState extends State<Profile_HomeScreen>{
   Future<void> login() async {
     final email = _emailController.text;
     final password = _passwordController.text;
-    if (_formKey.currentState!.validate()) {
       final response = await http.post(
         Uri.parse('http://10.0.2.2:4000/login'),
-        body: {'email': email, 'password': password},
+        body: {
+          'email': email, 
+          'password': password
+          },
       );
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
@@ -169,8 +170,8 @@ class LoginScreenState extends State<Profile_HomeScreen>{
         await prefs.setString('token', token);
         widget.onLoginSuccess();
       } else {
+        print('server status non-respone');
       }
-    }
   }
 
 }
