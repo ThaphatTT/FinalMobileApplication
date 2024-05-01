@@ -105,7 +105,7 @@ app.get('/user/:id', (req, res) => {
   pool.getConnection((err,connection)=>{
     if(err) throw err;
     const { id } = req.params;
-    const sql = 'SELECT email, password, fname, lname, birthday, mphone, sex, address, permission FROM users WHERE id = ?'
+    const sql = 'SELECT id, email, fname, lname, birthday FROM users WHERE id = ?'
     pool.query(sql, [id], (error, results) => {
       if (error) throw error;
       if (results.length > 0) {
@@ -144,5 +144,84 @@ app.get('/user/permission/:id', (req, res) => {
     connection.release();
   })
 });
+
+app.get('/user/editProfile/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT id, email, password, fname, lname, birthday, mphone FROM users WHERE id = ?'
+    pool.query(sql, [id], (error, results) => {
+      if (error) throw error;
+      if (results.length > 0) {
+        const user = results[0];
+        res.send({ 
+          message: 'User data retrieved', 
+          user 
+        });
+        console.log(user);
+      } else {
+        res.status(404).send({ message: 'User not found' });
+      }
+    });
+    connection.release();
+  })
+});
+
+
+app.patch('/user/editProfile/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const { email, password, fname, lname, birthday, mphone, sex } = req.body;
+    const sql = 'UPDATE users SET email = ?, password = ?, fname = ?, lname = ?, birthday = ?, mphone = ?, sex = ? WHERE id = ?'
+    pool.query(sql, [email, password, fname, lname, birthday, mphone, sex, id], (error, results) => {
+      if (error) throw error;
+      res.send({ 
+        message: 'User data updated',
+      });
+    });
+    connection.release();
+  })
+});
+
+app.get('/user/Shipping/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT address FROM users WHERE id = ?'
+    pool.query(sql, [id], (error, results) => {
+      if (error) throw error;
+      if (results.length > 0) {
+        const user = results[0];
+        res.send({ 
+          message: 'User data retrieved', 
+          user 
+        });
+        console.log(user);
+      } else {
+        res.status(404).send({ message: 'User not found' });
+      }
+    });
+    connection.release();
+  })
+});
+
+app.patch('/user/editShipping/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const { address } = req.body;
+    const sql = 'UPDATE users SET address = ? WHERE id = ?'
+    pool.query(sql, [address, id], (error, results) => {
+      if (error) throw error;
+      res.send({ 
+        message: 'User shipping address data updated',
+        
+      });
+    });
+    connection.release();
+  })
+});
+
 
 app.listen(port, ()=> console.log((`listen on port ${port}`)));

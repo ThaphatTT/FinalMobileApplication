@@ -32,7 +32,7 @@ class _TabMenuButton extends State<TabMenuButton> {
   int _selectedIndex = 0;
   bool _isLoggedIn = false;
   bool _isAdmin = false;
-  
+  String _textLogin = 'Login';
 
   void _onItemTapped(int index) {
     setState(() {
@@ -44,6 +44,7 @@ class _TabMenuButton extends State<TabMenuButton> {
     setState(() {
       _isLoggedIn = true;
       _selectedIndex = 1;
+      _textLogin = 'Profile';
     });
     _isAdmin = await isAdmin();
   }
@@ -55,6 +56,7 @@ class _TabMenuButton extends State<TabMenuButton> {
       _isLoggedIn = false;
       _isAdmin = false;
       _selectedIndex = 1;
+      _textLogin = 'Login';
     });
   }
 
@@ -81,14 +83,14 @@ class _TabMenuButton extends State<TabMenuButton> {
         ) : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
-            label: 'Profile',
+            label: _textLogin,
           ),
         ],
         currentIndex: _selectedIndex,

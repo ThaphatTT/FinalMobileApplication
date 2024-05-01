@@ -30,9 +30,9 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: Text('Register'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back), // ใช้ไอคอนที่คุณต้องการ
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // นำทางกลับไปยังหน้าก่อนหน้า
+            Navigator.pop(context);
           },
         ),
       ),
