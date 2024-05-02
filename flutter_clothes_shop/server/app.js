@@ -3,8 +3,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql');
 const jwt = require('jsonwebtoken');
+const { error } = require('console');
 require('dotenv').config();
-
+const multer = require('multer');
+const fs = require('fs');
 // create secert key
 // const crypto = require('crypto');
 // const secretKey = crypto.randomBytes(64).toString('hex');
@@ -22,6 +24,7 @@ const port = 4000 || process.env.PORT;
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended : false }))
 app.use(bodyParser.json())
+const upload = multer({ dest: 'uploads/' });
 
 const pool = mysql.createPool({
   connectionLimit : 10,
@@ -197,7 +200,7 @@ app.get('/user/Shipping/:id', (req, res) => {
           message: 'User data retrieved', 
           user 
         });
-        console.log(user);
+        // console.log(user);
       } else {
         res.status(404).send({ message: 'User not found' });
       }
@@ -216,12 +219,82 @@ app.patch('/user/editShipping/:id', (req, res) => {
       if (error) throw error;
       res.send({ 
         message: 'User shipping address data updated',
-        
       });
     });
     connection.release();
   })
 });
 
+app.get('/clothes/getAllBrands', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const sql = "SELECT * FROM `clothes_brands`";
+    pool.query(sql, (err, result) => {
+      if(err) throw err;
+      res.send(result);
+    })
+    connection.release();
+  })
+})
+
+
+app.post('/clothes/createNewbrand',(req,res)=>{
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { clothes_brand } = req.body;
+    const sql = "INSERT INTO `clothes_brands` (`clothes_brand`) VALUES (?)";
+    pool.query(sql, clothes_brand,(err,result) =>{
+      if(err) throw err;
+      res.send({
+        message : 'create a new name brand successed'
+      });
+    })
+    connection.release();
+  })
+})
+
+app.get('/clothes/getAllClothes', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const sql = "SELECT * FROM `clothes_name`";
+    pool.query(sql, (err, result) => {
+      if(err) throw err;
+      res.send(result);
+    })
+    connection.release();
+  })
+})
+
+app.post('/clothes/createNewClothes',(req,res)=>{
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { clothes_name } = req.body;
+    const sql = "INSERT INTO `clothes_name` (`clothes_name`) VALUES (?)";
+    pool.query(sql, clothes_name,(err,result) =>{
+      if(err) throw err;
+      res.send({
+        message : 'create a new name brand successed'
+      });
+    })
+    connection.release();
+  })
+})
+
+app.post('/clothes/createClothes', upload.single('c_image'), (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const { c_brand, c_name, c_price } = req.body;
+    const c_image = fs.readFileSync(req.file.path);
+    const sql = "INSERT INTO `clothes` (`c_brand`, `c_name`, `c_price`, `c_image`) VALUES (?, ?, ?, ?)";
+    pool.query(sql, [c_brand, c_name, c_price, c_image], (err, result) => {
+      if(err) throw err;
+      res.send({
+        message : 'create a new clothes successed',
+        status : 'ok'
+      });
+    });
+    connection.release();
+  });
+});
 
 app.listen(port, ()=> console.log((`listen on port ${port}`)));

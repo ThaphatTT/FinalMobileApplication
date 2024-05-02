@@ -6,6 +6,8 @@ import 'package:flutter_clothes_shop/component/component_part/edit_profileDetail
 import 'package:flutter_clothes_shop/component/component_part/edit_ShippingAddress.dart';
 import 'package:flutter_clothes_shop/component/component_part/orderBuy.dart';
 import 'package:flutter_clothes_shop/component/component_part/orderSell.dart';
+import 'package:flutter_clothes_shop/component/component_part/createNewNameBrand.dart';
+import 'package:flutter_clothes_shop/component/component_part/createNewNameClothes.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -230,6 +232,93 @@ class _profileDetailState extends State<profileDetail> {
                       Container(
                         margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
                         child: Text('Shipping Address')
+                      )
+                    ],
+                  )
+                ),
+              ),
+            ),
+            ),
+            Container(
+              child: Material(
+              color: Colors.grey[300],
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => editShipping())
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Icon(Icons.location_on_outlined)
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        child: Text('Check order')
+                      )
+                    ],
+                  )
+                ),
+              ),
+            ),
+            ),
+            Container(
+              child: Material(
+              color: Colors.grey[300],
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => createNameBrand())
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Icon(Icons.location_on_outlined)
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        child: Text('Create a new name brand')
+                      )
+                    ],
+                  )
+                ),
+              ),
+            ),
+            ),
+            Container(
+              child: Material(
+              color: Colors.grey[300],
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => createNameClothes())
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Icon(Icons.location_on_outlined)
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        child: Text('Create a new name clothes')
                       )
                     ],
                   )

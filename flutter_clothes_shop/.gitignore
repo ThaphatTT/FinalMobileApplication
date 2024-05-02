@@ -11,6 +11,7 @@
 migrate_working_dir/
 server/node_modules
 server/.env
+server/uploads
 # IntelliJ related
 *.iml
 *.ipr
