@@ -297,4 +297,21 @@ app.post('/clothes/createClothes', upload.single('c_image'), (req, res) => {
   });
 });
 
+app.get('/clothes', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const sql = "SELECT * FROM `clothes`";
+    pool.query(sql, (err, result) => {
+      if(err) throw err;
+      const clothes = result.map((item) => ({
+        ...item,
+        c_image: Buffer.from(item.c_image).toString('base64'),
+      }));
+      res.send(clothes);
+    })
+    connection.release();
+  })
+})
+
+
 app.listen(port, ()=> console.log((`listen on port ${port}`)));

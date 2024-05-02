@@ -244,10 +244,7 @@ class _profileDetailState extends State<profileDetail> {
               color: Colors.grey[300],
               child: InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => editShipping())
-                  );
+
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -380,4 +377,5 @@ class _profileDetailState extends State<profileDetail> {
       }
     }
   }
+  
 }
