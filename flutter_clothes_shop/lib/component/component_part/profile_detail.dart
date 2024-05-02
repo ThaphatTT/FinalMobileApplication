@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:flutter_clothes_shop/component/component_part/edit_profileDetail.dart';
 import 'package:flutter_clothes_shop/component/component_part/edit_ShippingAddress.dart';
 import 'package:flutter_clothes_shop/component/component_part/orderBuy.dart';
 import 'package:flutter_clothes_shop/component/component_part/orderSell.dart';
+import 'package:flutter_clothes_shop/component/component_part/createNewNameBrand.dart';
+import 'package:flutter_clothes_shop/component/component_part/createNewNameClothes.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class profileDetail extends StatefulWidget {
   final Function onLogout;
@@ -16,6 +23,12 @@ class profileDetail extends StatefulWidget {
 
 class _profileDetailState extends State<profileDetail> {
   bool _PDisVisible = false;
+  Map<String, dynamic>? user = null;
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +61,7 @@ class _profileDetailState extends State<profileDetail> {
                       Container(
                     margin: EdgeInsets.fromLTRB(30, 0, 0, 0),
                     child: Text(
-                      'Thaphat Meechaitana',
+                      user != null ? user!['fname'] + ' ' + user!['lname'] : 'null',
                       style: TextStyle(
                               fontSize: 16.0,
                               color: Colors.black
@@ -64,9 +77,9 @@ class _profileDetailState extends State<profileDetail> {
                               fontSize: 16.0,
                               color: Colors.grey
                             ),
-                            children: const <TextSpan>[
-                              TextSpan(text: 
-                              'sumoasdasd@gmail.com', 
+                            children: <TextSpan>[
+                              TextSpan(
+                                text:user != null ? user!['email'] : 'null', 
                               style: TextStyle(
                                 fontSize: 16.0,
                                 color: Colors.black,
@@ -86,9 +99,8 @@ class _profileDetailState extends State<profileDetail> {
                               fontSize: 16.0,
                               color: Colors.grey
                             ),
-                            children: const <TextSpan>[
-                              TextSpan(text: 
-                              '2001-01-01', 
+                            children: <TextSpan>[
+                              TextSpan(text: user != null ? user!['birthday'] : 'null', 
                               style: TextStyle(
                                 fontSize: 16.0,
                                 color: Colors.black,
@@ -228,6 +240,90 @@ class _profileDetailState extends State<profileDetail> {
             ),
             ),
             Container(
+              child: Material(
+              color: Colors.grey[300],
+              child: InkWell(
+                onTap: () {
+
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Icon(Icons.location_on_outlined)
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        child: Text('Check order')
+                      )
+                    ],
+                  )
+                ),
+              ),
+            ),
+            ),
+            Container(
+              child: Material(
+              color: Colors.grey[300],
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => createNameBrand())
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Icon(Icons.location_on_outlined)
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        child: Text('Create a new name brand')
+                      )
+                    ],
+                  )
+                ),
+              ),
+            ),
+            ),
+            Container(
+              child: Material(
+              color: Colors.grey[300],
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => createNameClothes())
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Icon(Icons.location_on_outlined)
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        child: Text('Create a new name clothes')
+                      )
+                    ],
+                  )
+                ),
+              ),
+            ),
+            ),
+            Container(
             margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: Material(
             color: Colors.red[700],
@@ -258,4 +354,28 @@ class _profileDetailState extends State<profileDetail> {
       ),
     );
   }
+  Future<void> getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    // print('Yoooooooooooooooo');
+    // print(token);
+    if (token != null && token.isNotEmpty) {
+      final decodedToken = JwtDecoder.decode(token);
+      // print('this is decoded Tokennnnnnnnnnnnn');
+      // print(decodedToken);
+      final userId = decodedToken['id'];
+      final response = await http.get(
+        Uri.parse('http://10.0.2.2:4000/user/$userId'),
+      );
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        setState(() {
+          user = responseBody['user'];
+        });
+      } else {
+        print('server status non-respone');
+      }
+    }
+  }
+  
 }
