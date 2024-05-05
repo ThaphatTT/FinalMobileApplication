@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_clothes_shop/component/component_part/homeScreenDetail.dart';
+import 'package:intl/intl.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => HomeScreenState();
@@ -11,6 +13,7 @@ class HomeScreenState extends State<HomeScreen> {
   List<dynamic> products = [];
   List<dynamic> clothesNames = [];
   var matchingClothesName;
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
   @override
   void initState() {
     super.initState();
@@ -31,7 +34,7 @@ class HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AttractionDetailPage(id: products[i].id),
+                  builder: (context) => homeScreenDetailPage(id: products[i]['id'], matchingClothesName: matchingClothesName,),
                 ),
               );
             },
@@ -54,13 +57,19 @@ class HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.topLeft,
                     child: Column(
                       children: [
-                        Text('Original price'),
-                        Text(
-                          '฿ ' + products[i]['c_price'].toString(),
-                          style: TextStyle(
-                            fontSize: 25.0,
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
+                        Container(
+                          width: double.infinity,
+                          child: Text('Original price'),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: Text(
+                            formatCurrency.format(num.parse(products[i]['c_price'])),
+                            style: TextStyle(
+                              fontSize: 25.0,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],

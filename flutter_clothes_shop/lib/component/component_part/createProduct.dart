@@ -18,6 +18,8 @@ class _createProductScreenState extends State<createProductScreen> {
   List<Map<String, dynamic>> brandDropdownOptions = [];
   Map<String, dynamic>? _clothes;
   List<Map<String, dynamic>> clothesDropdownOptions = [];
+  Map<String, dynamic>? _typeclothes;
+  List<Map<String, dynamic>> typeDropdownOptions = [];
   final _price = TextEditingController();
   String? _imagePath;
   @override
@@ -159,6 +161,7 @@ class _createProductScreenState extends State<createProductScreen> {
       throw Exception('Failed to load brands');
     }
   }
+
   Future<void> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {

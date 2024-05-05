@@ -253,6 +253,60 @@ app.post('/clothes/createNewbrand',(req,res)=>{
   })
 })
 
+app.get('/clothes/AllNewType', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const sql = "SELECT * FROM `clothes_type`";
+    pool.query(sql, (err, result) => {
+      if(err) throw err;
+      res.send(result);
+    })
+    connection.release();
+  })
+})
+
+app.post('/clothes/CreateNewType', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { clothes_type } = req.body;
+    const sql = "INSERT INTO `clothes_type` (`clothes_type`) VALUES (?)";
+    pool.query(sql, clothes_type,(err,result) =>{
+      if(err) throw err;
+      res.send({
+        message : 'create a new name brand successed'
+      });
+    })
+    connection.release();
+  })
+})
+
+app.get('/clothes/AllNewSize', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const sql = "SELECT * FROM `clothes_size`";
+    pool.query(sql, (err, result) => {
+      if(err) throw err;
+      res.send(result);
+    })
+    connection.release();
+  })
+})
+
+app.post('/clothes/CreateNewSize', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { clothes_size, clothes_type } = req.body;
+    const sql = "INSERT INTO `clothes_size` (`size`,`type_clothes`) VALUES (?, ?)";
+    pool.query(sql, [clothes_size,clothes_type],(err,result) =>{
+      if(err) throw err;
+      res.send({
+        message : 'create a new name brand successed'
+      });
+    })
+    connection.release();
+  })
+})
+
 app.get('/clothes/getAllClothes', (req, res) => {
   pool.getConnection((err, connection) => {
     if(err) throw err;
@@ -312,6 +366,87 @@ app.get('/clothes', (req, res) => {
     connection.release();
   })
 })
+
+app.get('/post/condition', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const sql = "SELECT * FROM `clothes_condition`";
+    pool.query(sql, (err, result) => {
+      if(err) throw err;
+      res.send(result);
+    })
+    connection.release();
+  })
+})
+
+app.get('/post/equipment', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const sql = "SELECT * FROM `clothes_equipment`";
+    pool.query(sql, (err, result) => {
+      if(err) throw err;
+      res.send(result);
+    })
+    connection.release();
+  })
+})
+
+app.post('/post/createPostUserProduct',(req,res) =>{
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const data = {
+      user_id: req.body.user_id,
+      clothes_id: req.body.clothes_id,
+      condition_id: req.body.condition_id,
+      equipment_id: req.body.equipment_id,
+      sizeclothes_id: req.body.sizeclothes_id,
+      typeclothes_id: req.body.typeclothes_id,
+      product_price: req.body.product_price,
+    };
+    console.log(`connected as id ${connection.threadId}`);
+    console.log(req.body);
+    const sql = "INSERT INTO `post`(`u_id`, `c_id`, `cc_id`, `ce_id`, `c_size`, `c_type`, `c_price`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    connection.query(sql,[data.user_id, data.clothes_id, data.condition_id, data.equipment_id,data.sizeclothes_id, data.typeclothes_id, data.product_price],(err,results) =>{
+      if(err) throw err;
+      const responseData = {
+        message: 'create a user succussed',
+        data: data,
+        postId: results.insertId,
+        status: 'ok'
+      };
+      res.send(responseData);
+      connection.release();
+    })
+  });
+});
+
+app.post('/post/createImage', upload.array('img_post'), (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    if (!req.files || req.files.length === 0) {
+      res.status(400).send({ message: 'No files were uploaded.' });
+      return;
+    }
+    const data = {
+      postId: req.body.postId,
+      images: req.files,
+    };
+    console.log(`connected as id ${connection.threadId}`);
+    const sql = "INSERT INTO `image_post`(`idpost`, `img_post`) VALUES (?, ?)";
+    data.images.forEach(image => {
+      connection.query(sql, [data.postId, image.path], (err, results) => {
+        if (err) throw err;
+      });
+    });
+    res.send({
+      message: 'Images created successfully!',
+      data: data,
+      status: 'ok'
+    });
+    connection.release();
+  });
+});
+
 
 
 app.listen(port, ()=> console.log((`listen on port ${port}`)));
