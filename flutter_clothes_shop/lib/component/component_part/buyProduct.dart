@@ -1,75 +1,204 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import 'package:flutter_clothes_shop/component/component_part/buyProductVerify.dart';
 
 class BuyProduct extends StatefulWidget {
-  const BuyProduct({super.key});
+  final id;
+  const BuyProduct({super.key, required this.id});
   
   @override
   State<BuyProduct> createState() => _BuyProductState();
 }
 
 class _BuyProductState extends State<BuyProduct> {
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
+  Map<String, dynamic>? _post;
+  List<Map<String, dynamic>> postOptions = [];
+  List<Map<String, dynamic>> conditionDropdownOptions = [];
+  List<Map<String, dynamic>> equipmentDropdownOptions = [];
+  List<dynamic> image = [];
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Buy a Product'),
-      ),
-      body: SingleChildScrollView(
-        child :GestureDetector( 
+  void initState() {
+    super.initState();
+    getAllUserProductPost();
+    getAllCondition();
+    getAllEquipment();
+  }
+  // Future<void> fetchData() async {
+  //   await Future.wait([
+  //     getAllUserProductPost(),
+  //     getAllCondition(),
+  //     getAllEquipment(),
+  //   ]);
+  //   getAllImages();
+  // }
+  @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Buy a Product'),
+    ),
+    body: ListView.builder(
+      itemCount: postOptions.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
           onTap: () {
             Navigator.push(
-              context, 
-              MaterialPageRoute(builder: (context) => buyProductVerify())
-              );
-          },
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-                height: 90,
-                color: Colors.amber,
-                child : Row(
-                  children: [
-                    Container(
-                      color: Colors.green,
-                      width:  150,
-                      child: Image.asset('assets/images/coat_hanger.png'),
-                    ),
-                    Flexible(
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                            child: Text(
-                              'Conditon',
-                              ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(5, 10, 0, 5),
-                            child: Text('Stardard (3-5 days)'),
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(50, 50, 0, 0),
-                      child: Text(
-                        '฿ 1,500',
-                        style: TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold
-                              ),
-                      ),
-                    ),
-                  ],
-                )
+              context,
+              MaterialPageRoute(
+                builder: (context) => buyProductVerify(id: postOptions[index]['p_id']),
               ),
-            ],
-          )
-        ))
+            );
+          },
+          child: Container(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+            height: 90,
+            color: Colors.amber,
+            child: Row(
+              children: [
+                Container(
+                  color: Colors.green,
+                  width: 150,
+                  child: postOptions[index]['images'].isNotEmpty
+                  ? Image.memory(base64Decode(postOptions[index]['images'][0]['img_post']))
+                  : Container(),
+                ),
+                Flexible(
+                  child: Column(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                        child: Text(
+                          getConditionName(postOptions[index]['cc_id']),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                        child: Text(
+                          getEquipmentName(postOptions[index]['ce_id']),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                        child: Text(
+                          postOptions[index]['c_size'].toString()
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.bottomRight,
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: Text(
+                    formatCurrency.format(num.parse(postOptions[index]['c_price'].toString())),
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
+
+  Future<void> getAllUserProductPost() async {
+    var postId = widget.id;
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/post/buyProduct/$postId'),
     );
+    if (response.statusCode == 200) {
+      var body = jsonDecode(response.body);
+      if (body is Map<String, dynamic>) {
+        List<dynamic> results = body['results'];
+        for (var result in results) {
+          var post = {
+            'p_id': result['id'], 
+            'cc_id': result['cc_id'], 
+            'ce_id': result['ce_id'], 
+            'c_size': result['c_size'],
+            'c_typeId': result['c_type'],
+            'c_price': result['c_price'],
+            'images': await getImages(result['id']),
+          };
+          setState(() {
+            postOptions.add(post);
+          });
+        }
+      }
+    } else {
+      throw Exception('Failed to load brands');
+    }
+    print(postOptions);
   }
+  Future<void> getAllCondition() async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/post/condition'),
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      List<Map<String, dynamic>> condition = body.map((dynamic item) => {'id': item['id'], 'name': item['c_condition']}).toList();
+      setState(() {
+        conditionDropdownOptions = condition;
+      });
+    } else {
+      throw Exception('Failed to load brands');
+    }
+  }
+
+  Future<void> getAllEquipment() async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/post/equipment'),
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      List<Map<String, dynamic>> equipment = body.map((dynamic item) => {'id': item['id'], 'name': item['c_equipment']}).toList();
+      setState(() {
+        equipmentDropdownOptions = equipment;
+      });
+    } else {
+      throw Exception('Failed to load brands');
+    }
+  }
+  Future<List<Map<String, dynamic>>> getImages(int postId) async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/post/buyProduct/Image/$postId'),
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data.map<Map<String, dynamic>>((i) {
+        if (i is Map<String, dynamic>) {
+          return i;
+        } else {
+          throw Exception('Invalid data format');
+        }
+      }).toList();
+    } else {
+      throw Exception('Failed to load images');
+    }
+
+  }
+
+  String getConditionName(int id) {
+    return conditionDropdownOptions.firstWhere((option) => option['id'] == id)['name'];
+  }
+
+  String getEquipmentName(int id) {
+    return equipmentDropdownOptions.firstWhere((option) => option['id'] == id)['name'];
+  }
+
 }

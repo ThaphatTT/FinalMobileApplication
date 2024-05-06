@@ -71,6 +71,7 @@ app.post('/login', (req, res) => {
       res.status(401).send({ message: 'Invalid email or password' });
     }
   });
+  
   connection.release();
   })
 });
@@ -434,7 +435,8 @@ app.post('/post/createImage', upload.array('img_post'), (req, res) => {
     console.log(`connected as id ${connection.threadId}`);
     const sql = "INSERT INTO `image_post`(`idpost`, `img_post`) VALUES (?, ?)";
     data.images.forEach(image => {
-      connection.query(sql, [data.postId, image.path], (err, results) => {
+      let img_post = fs.readFileSync(image.path);
+      connection.query(sql, [data.postId, img_post], (err, results) => {
         if (err) throw err;
       });
     });
@@ -446,6 +448,39 @@ app.post('/post/createImage', upload.array('img_post'), (req, res) => {
     connection.release();
   });
 });
+
+app.get('/post/buyProduct/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT * FROM `post` WHERE `c_id` = ?'
+    pool.query(sql, [id], (error, results) => {
+      if (error) throw error;
+        res.send({ 
+          message: 'buyProduct data fetch success', 
+          results
+        });
+    });
+    connection.release();
+  })
+});
+
+app.get('/post/buyProduct/Image/:id', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT `img_post` FROM `image_post` WHERE `idpost` = ?';
+    pool.query(sql,[id],(err, result) => {
+      if(err) throw err;
+      const clothes = result.map((item) => ({
+        ...item,
+        img_post: Buffer.from(item.img_post).toString('base64'),
+      }));
+      res.send(clothes);
+    })
+    connection.release();
+  })
+})
 
 
 

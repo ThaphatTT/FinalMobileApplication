@@ -12,29 +12,34 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   List<dynamic> products = [];
   List<dynamic> clothesNames = [];
+  List<dynamic> clothesBrand = [];
   var matchingClothesName;
+  var matchingClothesbrand;
   final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
   @override
   void initState() {
     super.initState();
     getAllClothes();
     getAllClothesNames();
+    getAllBrands();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: ListView.builder(
         itemCount: products.length,
         itemBuilder: (context, i) {
           matchingClothesName = clothesNames.firstWhere((clothesName) => clothesName['id'] == products[i]['c_name'], orElse: () => null);
+          matchingClothesbrand = clothesBrand.firstWhere((clothesBrand) => clothesBrand['id'] == products[i]['c_brand'], orElse: () => {'id': null, 'name': null});
+          matchingClothesbrand != null && matchingClothesbrand['clothes_name'] != null ? matchingClothesbrand['clothes_brand'] : 'Unknown';
+          print(matchingClothesbrand);
           return GestureDetector( 
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => homeScreenDetailPage(id: products[i]['id'], matchingClothesName: matchingClothesName,),
+                  builder: (context) => homeScreenDetailPage(id: products[i]['id'], matchingClothesName: matchingClothesName, matchingClothesbrand : matchingClothesbrand),
                 ),
               );
             },
@@ -103,6 +108,7 @@ class HomeScreenState extends State<HomeScreen> {
     } else {
       throw Exception('Failed to load clothes');
     }
+    print(products[0]['c_brand']);
   }
   Future<void> getAllClothesNames() async {
     final response = await http.get(
@@ -115,6 +121,20 @@ class HomeScreenState extends State<HomeScreen> {
       });
     } else {
       throw Exception('Failed to load clothes names');
+    }
+  }
+  Future<void> getAllBrands() async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/clothes/getAllBrands'),
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      List<Map<String, dynamic>> brands = body.map((dynamic item) => {'id': item['id'], 'c_brand': item['clothes_brand']}).toList();
+      setState(() {
+        clothesBrand = brands;
+      });
+    } else {
+      throw Exception('Failed to load brands');
     }
   }
 }

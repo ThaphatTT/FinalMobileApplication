@@ -236,7 +236,10 @@ class _createPostProductScreenState extends State<createPostProductScreen> {
     // print(typeDropdownOptions);
   }
     Future<void> pickFiles() async {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: true
+        );
 
       if (result != null) {
         // รับเส้นทางไฟล์
@@ -288,27 +291,33 @@ class _createPostProductScreenState extends State<createPostProductScreen> {
       }
   }
   Future<void> createImage(int postId) async {
-    var request = http.MultipartRequest('POST', Uri.parse('http://10.0.2.2:4000/post/createImage'));
-    request.fields['postId'] = postId.toString();
-    for (var imagePath in _imagePaths!) {
-      request.files.add(await http.MultipartFile.fromPath('img_post', imagePath));
-      print(imagePath);
-    }
-    print(_imagePaths);
-    print(request);
-
-    var response = await request.send();
-    print(response);
-    if (response.statusCode == 200) {
-      print('Clothes created successed!');
-      response.stream.transform(utf8.decoder).listen((value) {
-        var data = jsonDecode(value);
-        if (data['status'] == 'ok') {
-          Navigator.pop(context);
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse('http://10.0.2.2:4000/post/createImage'));
+      request.fields['postId'] = postId.toString();
+      if (_imagePaths != null) {
+        for (var imagePath in _imagePaths!) {
+          request.files.add(await http.MultipartFile.fromPath('img_post', imagePath));
+          print(imagePath);
         }
-      }); 
-    } else {
-      print('Failed to create many image');
+      }
+      print(_imagePaths);
+      print(request);
+
+      var response = await request.send();
+      print(response);
+      if (response.statusCode == 200) {
+        print('Clothes created successed!');
+        response.stream.transform(utf8.decoder).listen((value) {
+          var data = jsonDecode(value);
+          if (data['status'] == 'ok') {
+            Navigator.pop(context);
+          }
+        }); 
+      } else {
+        print('Failed to create many image');
+      }
+    } catch (e) {
+      print('An error occurred: $e');
     }
   }
 

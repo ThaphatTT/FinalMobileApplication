@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_clothes_shop/component/component_part/verifyPayment.dart';
 class buyProductVerify extends StatefulWidget {
-  const buyProductVerify({super.key});
+  final id;
+  const buyProductVerify({super.key, required this.id});
 
   @override
   State<buyProductVerify> createState() => _buyProductVerifyState();
 }
 
 class _buyProductVerifyState extends State<buyProductVerify> {
+  Map<String, dynamic>? _product;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

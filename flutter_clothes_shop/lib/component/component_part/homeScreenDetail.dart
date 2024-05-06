@@ -9,8 +9,9 @@ import 'package:flutter_clothes_shop/component/component_part/buyProduct.dart';
 class homeScreenDetailPage extends StatefulWidget {
   final int id;
   final dynamic matchingClothesName;
+  final dynamic matchingClothesbrand;
 
-  const homeScreenDetailPage({super.key, required this.id, this.matchingClothesName});
+  const homeScreenDetailPage({super.key, required this.id, this.matchingClothesName, required this.matchingClothesbrand});
 
   @override
   State<StatefulWidget> createState() {
@@ -165,7 +166,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                             ),
                               ),
                             Text(
-                              'Yoo',
+                              widget.matchingClothesbrand != null ? '${widget.matchingClothesbrand['c_brand']}' : 'null',
                               style: TextStyle(
                               fontSize: 16.0,
                               color: Colors.black,
@@ -211,12 +212,12 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                             ),
                               ),
                             Text(
-                              'Yoo',
+                              '฿ '+ _attractionDetail!['c_price'],
                               style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 16.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
                               )
                           ],
                         ),
@@ -384,7 +385,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context)=> BuyProduct())
+                              MaterialPageRoute(builder: (context)=> BuyProduct(id : widget.id))
                             );
                           },
                           child: Container(
