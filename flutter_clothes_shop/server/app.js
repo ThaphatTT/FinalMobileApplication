@@ -403,11 +403,12 @@ app.post('/post/createPostUserProduct',(req,res) =>{
       sizeclothes_id: req.body.sizeclothes_id,
       typeclothes_id: req.body.typeclothes_id,
       product_price: req.body.product_price,
+      post_status: req.body.post_status,
     };
     console.log(`connected as id ${connection.threadId}`);
     console.log(req.body);
-    const sql = "INSERT INTO `post`(`u_id`, `c_id`, `cc_id`, `ce_id`, `c_size`, `c_type`, `c_price`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    connection.query(sql,[data.user_id, data.clothes_id, data.condition_id, data.equipment_id,data.sizeclothes_id, data.typeclothes_id, data.product_price],(err,results) =>{
+    const sql = "INSERT INTO `post`(`u_id`, `c_id`, `cc_id`, `ce_id`, `c_size`, `c_type`, `c_price`, `p_status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    connection.query(sql,[data.user_id, data.clothes_id, data.condition_id, data.equipment_id,data.sizeclothes_id, data.typeclothes_id, data.product_price, data.post_status],(err,results) =>{
       if(err) throw err;
       const responseData = {
         message: 'create a user succussed',
@@ -482,6 +483,21 @@ app.get('/post/buyProduct/Image/:id', (req, res) => {
   })
 })
 
+app.get('/post/buyProduct/Verify/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT * FROM `post` WHERE `c_id` = ?'
+    pool.query(sql, [id], (error, results) => {
+      if (error) throw error;
+        res.send({ 
+          message: 'buyProduct data fetch success', 
+          results
+        });
+    });
+    connection.release();
+  })
+});
 
 
 app.listen(port, ()=> console.log((`listen on port ${port}`)));

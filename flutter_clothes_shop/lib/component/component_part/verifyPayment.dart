@@ -6,7 +6,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_clothes_shop/component/component_part/successedPayment.dart';
 
 class verifyPayment extends StatefulWidget {
-  const verifyPayment({super.key});
+  final idPost;
+  final int getPrice;
+  const verifyPayment({super.key, required this.idPost, required this.getPrice});
 
   @override
   State<verifyPayment> createState() => _verifyPaymentState();
@@ -15,7 +17,6 @@ class verifyPayment extends StatefulWidget {
 class _verifyPaymentState extends State<verifyPayment> {
   String? _imagePath;
   final _copytextcontroller = '1298098683';
-
   void copy() async {
     await FlutterClipboard.copy(_copytextcontroller);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -30,6 +31,8 @@ class _verifyPaymentState extends State<verifyPayment> {
   }
   @override
   Widget build(BuildContext context) {
+    print(widget.idPost);
+    print(widget.getPrice);
     return Scaffold(
       appBar: AppBar(
         title: Text('Verify Payment'),
@@ -109,10 +112,14 @@ class _verifyPaymentState extends State<verifyPayment> {
                 borderRadius: BorderRadius.all(Radius.circular(5.5)),
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => successedPayment())
-                    );
+                    if(_imagePath!=null){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => successedPayment())
+                      );
+                    }else{
+                      
+                    }
                   },
                   child: Container(
                     width: 300,
@@ -150,4 +157,5 @@ class _verifyPaymentState extends State<verifyPayment> {
       }
       print(_imagePath);
   }
+
 }

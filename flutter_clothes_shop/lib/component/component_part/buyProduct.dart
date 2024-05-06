@@ -6,8 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:flutter_clothes_shop/component/component_part/buyProductVerify.dart';
 
 class BuyProduct extends StatefulWidget {
-  final id;
-  const BuyProduct({super.key, required this.id});
+  final int id;
+  final dynamic matchingClothesName;
+  final dynamic matchingClothesbrand;
+  const BuyProduct({super.key, required this.id, required this.matchingClothesName, required this.matchingClothesbrand});
   
   @override
   State<BuyProduct> createState() => _BuyProductState();
@@ -20,6 +22,7 @@ class _BuyProductState extends State<BuyProduct> {
   List<Map<String, dynamic>> conditionDropdownOptions = [];
   List<Map<String, dynamic>> equipmentDropdownOptions = [];
   List<dynamic> image = [];
+  var idPost;
 
   @override
   void initState() {
@@ -28,14 +31,6 @@ class _BuyProductState extends State<BuyProduct> {
     getAllCondition();
     getAllEquipment();
   }
-  // Future<void> fetchData() async {
-  //   await Future.wait([
-  //     getAllUserProductPost(),
-  //     getAllCondition(),
-  //     getAllEquipment(),
-  //   ]);
-  //   getAllImages();
-  // }
   @override
 Widget build(BuildContext context) {
   return Scaffold(
@@ -50,7 +45,16 @@ Widget build(BuildContext context) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => buyProductVerify(id: postOptions[index]['p_id']),
+                builder: (context) => buyProductVerify(id: postOptions[index]['p_id'], 
+                matchingClothesName : widget.matchingClothesName, 
+                matchingClothesbrand: widget.matchingClothesbrand,
+                getConditionName: getConditionName(postOptions[index]['cc_id']),
+                getEquipmentName: getEquipmentName(postOptions[index]['ce_id']),
+                getSizeName: postOptions[index]['c_size'],
+                getPrice: postOptions[index]['c_price'],
+                image : postOptions[index]['images'],
+                idPost : postOptions[index]['p_id']
+                ),
               ),
             );
           },

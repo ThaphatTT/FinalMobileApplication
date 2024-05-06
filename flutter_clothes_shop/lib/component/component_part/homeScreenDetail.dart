@@ -23,6 +23,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
   List<dynamic> products = [];
   bool _PDisVisible = false;
   bool _SMisVisible = false;
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
 
   @override
   void initState() {
@@ -49,7 +50,10 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.memory(base64Decode(_attractionDetail!['c_image'])),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Image.memory(base64Decode(_attractionDetail!['c_image'])),
+                  ),
                   const SizedBox(
                     height: 16,
                   ),
@@ -57,7 +61,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                     alignment: Alignment.topLeft,
                     child: 
                       Text(
-                        widget.matchingClothesName != null ? '${widget.matchingClothesName['clothes_name']}' : 'null',
+                        widget.matchingClothesName,
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
@@ -98,7 +102,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                       children: [
                         Flexible(
                           child: Text(
-                          '฿ '+ _attractionDetail!['c_price'],
+                          formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black,
@@ -108,7 +112,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                         ),
                         Flexible(
                           child: Text(
-                          '฿ '+ _attractionDetail!['c_price'],
+                          formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black,
@@ -118,7 +122,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                         ),
                         Flexible(
                           child: Text(
-                          '฿ '+ _attractionDetail!['c_price'],
+                          formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black,
@@ -189,7 +193,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                             ),
                               ),
                             Text(
-                              widget.matchingClothesName != null ? '${widget.matchingClothesName['clothes_name']}' : 'null',
+                              widget.matchingClothesName,
                               style: TextStyle(
                               fontSize: 16.0,
                               color: Colors.black,
@@ -212,7 +216,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                             ),
                               ),
                             Text(
-                              '฿ '+ _attractionDetail!['c_price'],
+                              formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
                               style: TextStyle(
                                 fontSize: 16.0,
                                 color: Colors.black,
@@ -385,7 +389,10 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context)=> BuyProduct(id : widget.id))
+                              MaterialPageRoute(builder: (context)=> BuyProduct(id : widget.id, matchingClothesName : widget.matchingClothesName, 
+                              matchingClothesbrand: widget.matchingClothesbrand,
+                              
+                              ))
                             );
                           },
                           child: Container(

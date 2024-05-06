@@ -275,7 +275,8 @@ class _createPostProductScreenState extends State<createPostProductScreen> {
           'equipment_id' : _equipment!['id'].toString(),
           'sizeclothes_id' : _sizeclothes!['name'].toString(),
           'typeclothes_id' : _typeclothes!['id'].toString(),
-          'product_price' : _price.text
+          'product_price' : _price.text,
+          'post_status' : 'Waiting customer buy order'
         })
       );
 

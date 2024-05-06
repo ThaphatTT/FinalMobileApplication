@@ -16,8 +16,7 @@ class _createProductScreenState extends State<createProductScreen> {
   final _formKey = GlobalKey<FormState>();
   Map<String, dynamic>? _brand;
   List<Map<String, dynamic>> brandDropdownOptions = [];
-  Map<String, dynamic>? _clothes;
-  List<Map<String, dynamic>> clothesDropdownOptions = [];
+  final _clothes = TextEditingController();
   Map<String, dynamic>? _typeclothes;
   List<Map<String, dynamic>> typeDropdownOptions = [];
   final _price = TextEditingController();
@@ -26,7 +25,6 @@ class _createProductScreenState extends State<createProductScreen> {
   void initState() {
     super.initState();
     getAllBrands();
-    getAllClothes();
   }
 
   @override
@@ -55,20 +53,18 @@ class _createProductScreenState extends State<createProductScreen> {
                 );
               }).toList(),
             ),
-            DropdownButtonFormField<Map<String, dynamic>>(
-              hint: Text('Select Name'),
-              onChanged: (Map<String, dynamic>? newValue)  {
-                setState(() {
-                  _clothes = newValue;
-                  print(_clothes!['id']);
-                });
+            TextFormField(
+              controller : _clothes,
+              decoration: InputDecoration(
+                labelText: 'Product Name',
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter Staring price';
+                }
+                return null;
               },
-              items: clothesDropdownOptions.map<DropdownMenuItem<Map<String, dynamic>>>((Map<String, dynamic> value){
-                return DropdownMenuItem<Map<String, dynamic>>(
-                  value: value,
-                  child: Text(value['name']),
-                  );
-              }).toList(),
             ),
             TextFormField(
               controller : _price,
@@ -147,21 +143,6 @@ class _createProductScreenState extends State<createProductScreen> {
     }
   }
 
-  Future<void> getAllClothes() async {
-    final response = await http.get(
-      Uri.parse('http://10.0.2.2:4000/clothes/getAllClothes'),
-    );
-    if (response.statusCode == 200) {
-      List<dynamic> body = jsonDecode(response.body);
-      List<Map<String, dynamic>> clothes = body.map((dynamic item) => {'id': item['id'], 'name': item['clothes_name']}).toList();
-      setState(() {
-        clothesDropdownOptions = clothes;
-      });
-    } else {
-      throw Exception('Failed to load brands');
-    }
-  }
-
   Future<void> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
@@ -180,7 +161,7 @@ class _createProductScreenState extends State<createProductScreen> {
   Future<void> createClothes() async {
   var request = http.MultipartRequest('POST', Uri.parse('http://10.0.2.2:4000/clothes/createClothes'));
   request.fields['c_brand'] = _brand!['id'].toString();
-  request.fields['c_name'] = _clothes!['id'].toString();
+  request.fields['c_name'] = _clothes.text;
   request.fields['c_price'] = _price.text;
   request.files.add(await http.MultipartFile.fromPath('c_image', _imagePath!));
   var response = await request.send();

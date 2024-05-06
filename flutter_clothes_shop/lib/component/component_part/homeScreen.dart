@@ -13,15 +13,15 @@ class HomeScreenState extends State<HomeScreen> {
   List<dynamic> products = [];
   List<dynamic> clothesNames = [];
   List<dynamic> clothesBrand = [];
-  var matchingClothesName;
+  var clothesName;
   var matchingClothesbrand;
   final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
   @override
   void initState() {
     super.initState();
     getAllClothes();
-    getAllClothesNames();
     getAllBrands();
+    
   }
 
   @override
@@ -30,16 +30,14 @@ class HomeScreenState extends State<HomeScreen> {
       body: ListView.builder(
         itemCount: products.length,
         itemBuilder: (context, i) {
-          matchingClothesName = clothesNames.firstWhere((clothesName) => clothesName['id'] == products[i]['c_name'], orElse: () => null);
           matchingClothesbrand = clothesBrand.firstWhere((clothesBrand) => clothesBrand['id'] == products[i]['c_brand'], orElse: () => {'id': null, 'name': null});
-          matchingClothesbrand != null && matchingClothesbrand['clothes_name'] != null ? matchingClothesbrand['clothes_brand'] : 'Unknown';
           print(matchingClothesbrand);
           return GestureDetector( 
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => homeScreenDetailPage(id: products[i]['id'], matchingClothesName: matchingClothesName, matchingClothesbrand : matchingClothesbrand),
+                  builder: (context) => homeScreenDetailPage(id: products[i]['id'], matchingClothesName: products[i]['c_name'], matchingClothesbrand : matchingClothesbrand),
                 ),
               );
             },
@@ -51,7 +49,7 @@ class HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.topLeft,
                     margin: EdgeInsets.fromLTRB(0, 5, 0, 30),
                     child: Text(
-                      matchingClothesName != null && matchingClothesName['clothes_name'] != null ? matchingClothesName['clothes_name'] : 'Unknown',
+                      products[i]['c_name'],
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
@@ -108,20 +106,7 @@ class HomeScreenState extends State<HomeScreen> {
     } else {
       throw Exception('Failed to load clothes');
     }
-    print(products[0]['c_brand']);
-  }
-  Future<void> getAllClothesNames() async {
-    final response = await http.get(
-      Uri.parse('http://10.0.2.2:4000/clothes/getAllClothes'),
-    );
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        clothesNames = data;
-      });
-    } else {
-      throw Exception('Failed to load clothes names');
-    }
+    print(products);
   }
   Future<void> getAllBrands() async {
     final response = await http.get(

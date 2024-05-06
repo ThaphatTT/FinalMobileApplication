@@ -7,7 +7,6 @@ import 'package:flutter_clothes_shop/component/component_part/edit_ShippingAddre
 import 'package:flutter_clothes_shop/component/component_part/orderBuy.dart';
 import 'package:flutter_clothes_shop/component/component_part/orderSell.dart';
 import 'package:flutter_clothes_shop/component/component_part/createNewNameBrand.dart';
-import 'package:flutter_clothes_shop/component/component_part/createNewNameClothes.dart';
 import 'package:flutter_clothes_shop/component/component_part/createNewSizeClothes copy.dart';
 import 'package:flutter_clothes_shop/component/component_part/createNewTypeClothes.dart';
 
@@ -303,35 +302,6 @@ class _profileDetailState extends State<profileDetail> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => createNameClothes())
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 50,
-                      child: Row(
-                        children: [
-                          Container(
-                            child: Icon(Icons.location_on_outlined)
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                            child: Text('Create a new name clothes')
-                          )
-                        ],
-                      )
-                    ),
-                  ),
-                ),
-                ),
-                Container(
-                  child: Material(
-                  color: Colors.grey[300],
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
                         MaterialPageRoute(builder: (context) => createNewSizeClothes())
                       );
                     },
@@ -438,5 +408,4 @@ class _profileDetailState extends State<profileDetail> {
       }
     }
   }
-  
 }
