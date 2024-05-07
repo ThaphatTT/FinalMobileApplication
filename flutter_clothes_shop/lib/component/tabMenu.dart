@@ -115,7 +115,7 @@ class _TabMenuButton extends State<TabMenuButton> {
       final responseBody = jsonDecode(response.body);
       final user = responseBody['user'];
       final role = user['permission'];
-      if(role == 1) {
+      if(role == 2) {
         return true;
       }else{
         return false;

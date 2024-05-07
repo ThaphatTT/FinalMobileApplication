@@ -11,7 +11,6 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   List<dynamic> products = [];
-  List<dynamic> clothesNames = [];
   List<dynamic> clothesBrand = [];
   var clothesName;
   var matchingClothesbrand;

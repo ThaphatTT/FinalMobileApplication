@@ -25,12 +25,20 @@ class _buyProductVerifyState extends State<buyProductVerify> {
   Map<String, dynamic>? _product;
   int shippingService = 100;
   final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
+  var total;
   Future<int> calculateTotal() async {
     int productPrice = widget.getPrice;
-    return shippingService + productPrice;
+    total = shippingService + productPrice;
+    return total;
+  }
+  @override
+  void initState() {
+    super.initState();
+    calculateTotal();
   }
   @override
   Widget build(BuildContext context) {
+    print(total);
     return Scaffold(
       appBar: AppBar(
         title: Text('Buy'),

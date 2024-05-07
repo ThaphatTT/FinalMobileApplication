@@ -490,14 +490,108 @@ app.get('/post/buyProduct/Verify/:id', (req, res) => {
     const sql = 'SELECT * FROM `post` WHERE `c_id` = ?'
     pool.query(sql, [id], (error, results) => {
       if (error) throw error;
-        res.send({ 
-          message: 'buyProduct data fetch success', 
-          results
-        });
+      res.send({ 
+        message: 'buyProduct data fetch success', 
+        results
+      });
     });
     connection.release();
   })
 });
+
+app.get('/order/orderSelling/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT * FROM `post` WHERE `u_id` = ?'
+    pool.query(sql, [id], (error, results) => {
+      if (error) throw error;
+      res.send({ 
+        message: 'orderSelling data fetch success', 
+        results
+      });
+    });
+    connection.release();
+  })
+});
+
+app.post('/order/orderBuying',(req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    const data = {
+      idUser: req.body.idUser,
+      idPost: req.body.idPost,
+      date: new Date(),
+      total: req.body.total,
+      o_status: 1,
+    };
+    console.log(`connected as id ${connection.threadId}`);
+    const sql = "INSERT INTO `order`(`iduser`, `idpost`, `date`, `total`,`o_status`) VALUES (?, ?, ?, ?, ?)";
+    pool.query(sql, [data.idUser, data.idPost, data.date, data.total, data.o_status], (error, results) => {
+      if (error) throw error;
+      res.send({ 
+        message: 'buyProduct insert data successfully!',
+        data: data,
+        orderId: results.insertId,
+        status: 'ok'
+      });
+    });
+    connection.release();
+  });
+});
+
+app.post('/order/orderBuying/imgPayment', upload.single('img_payment'), (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const { orderId} = req.body;
+    const img_payment = fs.readFileSync(req.file.path);
+    const sql = "INSERT INTO `img_payment` (`idOrder`, `img_payment`) VALUES (?, ?)";
+    pool.query(sql, [orderId, img_payment], (err, result) => {
+      if(err) throw err;
+      res.send({
+        message : 'create a image payment successed',
+        status : 'ok'
+      });
+    });
+    connection.release();
+  });
+});
+
+app.post('/order/ChangeStatus',(req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    const data = {
+      idPost: req.body.idPost,
+      p_status: req.body.p_status,
+    };
+    console.log(data.idPost);
+    console.log(`connected as id ${connection.threadId}`);
+    const sql = "UPDATE `post` SET `p_status` = ? WHERE `id` = ?";
+    pool.query(sql, [data.p_status, data.idPost], (error, results) => {
+      if (error) throw error;
+      res.send({ 
+        message: 'Change data successfully!',
+        data: data,
+        status: 'ok'
+      });
+    });
+    connection.release();
+  });
+});
+
+app.get('/order/status', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const sql = "SELECT * FROM `order`";
+    pool.query(sql, (err, result) => {
+      if(err) throw err;
+      res.send(result);
+    })
+    connection.release();
+  })
+})
+
+
 
 
 app.listen(port, ()=> console.log((`listen on port ${port}`)));
