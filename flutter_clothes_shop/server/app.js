@@ -557,6 +557,7 @@ app.post('/order/orderBuying/imgPayment', upload.single('img_payment'), (req, re
   });
 });
 
+
 app.post('/order/ChangeStatus',(req, res) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
@@ -579,10 +580,42 @@ app.post('/order/ChangeStatus',(req, res) => {
   });
 });
 
+app.get('/order/orderBuying/Users/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT * FROM `order` WHERE `iduser` = ?'
+    pool.query(sql, [id], (error, results) => {
+      if (error) throw error;
+      res.send({ 
+        message: 'User`s ordey buy fetch success', 
+        results
+      });
+    });
+    connection.release();
+  })
+});
+
+app.get('/order/orderSelling/UserBuying/:id', (req, res) => {
+  pool.getConnection((err,connection)=>{
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT * FROM `post` WHERE `id` = ?'
+    pool.query(sql, [id], (error, results) => {
+      if (error) throw error;
+      res.send({ 
+        message: 'orderSelling data fetch success', 
+        results
+      });
+    });
+    connection.release();
+  })
+});
+
 app.get('/order/status', (req, res) => {
   pool.getConnection((err, connection) => {
     if(err) throw err;
-    const sql = "SELECT * FROM `order`";
+    const sql = "SELECT * FROM `order_status`";
     pool.query(sql, (err, result) => {
       if(err) throw err;
       res.send(result);

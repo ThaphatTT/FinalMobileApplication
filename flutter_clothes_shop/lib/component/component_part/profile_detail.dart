@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:flutter_clothes_shop/component/component_part/edit_profileDetail.dart';
-import 'package:flutter_clothes_shop/component/component_part/edit_ShippingAddress.dart';
-import 'package:flutter_clothes_shop/component/component_part/orderBuy.dart';
-import 'package:flutter_clothes_shop/component/component_part/orderSell.dart';
-import 'package:flutter_clothes_shop/component/component_part/createNewNameBrand.dart';
-import 'package:flutter_clothes_shop/component/component_part/createNewSizeClothes copy.dart';
-import 'package:flutter_clothes_shop/component/component_part/createNewTypeClothes.dart';
+import 'package:flutter_clothes_shop/component/component_part/Profile_Detail/edit_profileDetail.dart';
+import 'package:flutter_clothes_shop/component/component_part/Profile_Detail/edit_ShippingAddress.dart';
+import 'package:flutter_clothes_shop/component/component_part/Profile_Detail/orderBuy.dart';
+import 'package:flutter_clothes_shop/component/component_part/Profile_Detail/orderSell.dart';
+import 'package:flutter_clothes_shop/component/component_part/AdminFunction/createNewNameBrand.dart';
+import 'package:flutter_clothes_shop/component/component_part/AdminFunction/createNewSizeClothes%20copy.dart';
+import 'package:flutter_clothes_shop/component/component_part/AdminFunction/createNewTypeClothes.dart';
+import 'package:flutter_clothes_shop/component/component_part/AdminFunction/CheckOrder/CheckOrder.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -245,7 +246,10 @@ class _profileDetailState extends State<profileDetail> {
                   color: Colors.grey[300],
                   child: InkWell(
                     onTap: () {
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CheckOrder())
+                        );
                     },
                     child: Container(
                       alignment: Alignment.center,

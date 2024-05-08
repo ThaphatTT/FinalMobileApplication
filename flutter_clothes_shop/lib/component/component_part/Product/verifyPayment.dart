@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_clothes_shop/component/component_part/successedPayment.dart';
+import 'package:flutter_clothes_shop/component/component_part/Product/successedPayment.dart';
 
 class verifyPayment extends StatefulWidget {
   final idPost;

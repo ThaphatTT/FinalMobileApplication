@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_clothes_shop/component/tabMenuHomeAppBar.dart';
 import 'package:flutter_clothes_shop/component/profile_screen.dart';
-import 'package:flutter_clothes_shop/component/component_part/createProduct.dart';
+import 'package:flutter_clothes_shop/component/component_part/Product/createProduct.dart';
 import 'package:flutter_clothes_shop/component/component_part/profile_detail.dart';
 
 import 'package:http/http.dart' as http;

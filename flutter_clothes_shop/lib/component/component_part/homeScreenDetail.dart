@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import 'package:flutter_clothes_shop/component/component_part/createPostProductSell.dart';
-import 'package:flutter_clothes_shop/component/component_part/buyProduct.dart';
+import 'package:flutter_clothes_shop/component/component_part/Product/createPostProductSell.dart';
+import 'package:flutter_clothes_shop/component/component_part/Product/buyProduct.dart';
 
 class homeScreenDetailPage extends StatefulWidget {
   final int id;

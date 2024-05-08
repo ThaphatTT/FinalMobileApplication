@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
 
-import 'package:flutter_clothes_shop/component/component_part/verifyPayment.dart';
+import 'package:flutter_clothes_shop/component/component_part/Product/verifyPayment.dart';
 import 'package:transparent_image/transparent_image.dart';
 class buyProductVerify extends StatefulWidget {
   final id;
