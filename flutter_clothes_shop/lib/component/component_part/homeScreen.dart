@@ -93,32 +93,38 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
   Future<void> getAllClothes() async {
-    final response = await http.get(
-      Uri.parse('http://10.0.2.2:4000/clothes'),
-    );
+  final response = await http.get(
+    Uri.parse('http://10.0.2.2:4000/clothes'),
+  );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    if (mounted) {
       setState(() {
         products = data.map((i) => i as Map<String,dynamic>).toList();
       });
-    } else {
-      throw Exception('Failed to load clothes');
     }
-    print(products);
+  } else {
+    throw Exception('Failed to load clothes');
   }
-  Future<void> getAllBrands() async {
-    final response = await http.get(
-      Uri.parse('http://10.0.2.2:4000/clothes/getAllBrands'),
-    );
-    if (response.statusCode == 200) {
-      List<dynamic> body = jsonDecode(response.body);
-      List<Map<String, dynamic>> brands = body.map((dynamic item) => {'id': item['id'], 'c_brand': item['clothes_brand']}).toList();
+  print(products);
+}
+
+Future<void> getAllBrands() async {
+  final response = await http.get(
+    Uri.parse('http://10.0.2.2:4000/clothes/getAllBrands'),
+  );
+  if (response.statusCode == 200) {
+    List<dynamic> body = jsonDecode(response.body);
+    List<Map<String, dynamic>> brands = body.map((dynamic item) => {'id': item['id'], 'c_brand': item['clothes_brand']}).toList();
+    if (mounted) {
       setState(() {
         clothesBrand = brands;
       });
-    } else {
-      throw Exception('Failed to load brands');
     }
+  } else {
+    throw Exception('Failed to load brands');
   }
+}
+
 }

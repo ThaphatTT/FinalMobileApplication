@@ -43,7 +43,7 @@ class _TabMenuButton extends State<TabMenuButton> {
  void onLoginSuccess() async {
     setState(() {
       _isLoggedIn = true;
-      _selectedIndex = 1;
+      _selectedIndex = 0;
       _textLogin = 'Profile';
     });
     _isAdmin = await isAdmin();
@@ -58,6 +58,10 @@ class _TabMenuButton extends State<TabMenuButton> {
       _selectedIndex = 1;
       _textLogin = 'Login';
     });
+  }
+  void initState() {
+    super.initState();
+    checkToken();
   }
 
   @override
@@ -123,6 +127,16 @@ class _TabMenuButton extends State<TabMenuButton> {
     } else {
       print('server status non-respone');
       return false;
+    }
+  }
+  
+  void checkToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null || token.isEmpty) {
+      onLogout();
+    } else {
+      onLoginSuccess();
     }
   }
 
