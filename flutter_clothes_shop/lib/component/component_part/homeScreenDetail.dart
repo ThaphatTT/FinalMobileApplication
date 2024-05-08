@@ -1,40 +1,38 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
-import 'package:flutter_clothes_shop/component/component_part/createPostProductSell.dart';
-import 'package:flutter_clothes_shop/component/component_part/buyProduct.dart';
+import 'package:flutter_clothes_shop/component/component_part/Product/createPostProductSell.dart';
+import 'package:flutter_clothes_shop/component/component_part/Product/buyProduct.dart';
 
-class AttractionDetailPage extends StatefulWidget {
+class homeScreenDetailPage extends StatefulWidget {
   final int id;
+  final dynamic matchingClothesName;
+  final dynamic matchingClothesbrand;
 
-  const AttractionDetailPage({super.key, required this.id});
+  const homeScreenDetailPage({super.key, required this.id, this.matchingClothesName, required this.matchingClothesbrand});
 
   @override
   State<StatefulWidget> createState() {
-    return _AttractionDetailPageState();
+    return _homeScreenDetailPageState();
   }
 }
-class _AttractionDetailPageState extends State<AttractionDetailPage> {
+class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
   Map<String, dynamic>? _attractionDetail;
+  List<dynamic> products = [];
   bool _PDisVisible = false;
   bool _SMisVisible = false;
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
 
   @override
   void initState() {
     super.initState();
-    _fetchAttractionDetail();
+    getAllClothes();
+    print(widget.matchingClothesName);
+    print(widget.id);
   }
 
-  Future<void> _fetchAttractionDetail() async {
-  final String response = await rootBundle.loadString('assets/products.json');
-  final Map<String, dynamic> allProducts = json.decode(response);
-  final List products = allProducts['products'];
-  
-  setState(() {
-    _attractionDetail = products.firstWhere((product) => product['id'] == widget.id);
-  });
-}
 
 
 
@@ -52,7 +50,10 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.network(_attractionDetail!['image']),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Image.memory(base64Decode(_attractionDetail!['c_image'])),
+                  ),
                   const SizedBox(
                     height: 16,
                   ),
@@ -60,10 +61,10 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                     alignment: Alignment.topLeft,
                     child: 
                       Text(
-                    _attractionDetail!['name'],
-                    style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
+                        widget.matchingClothesName,
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -99,30 +100,36 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '฿ '+ _attractionDetail!['price'].toString(),
+                        Flexible(
+                          child: Text(
+                          formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                           ),
-                        Text(
-                          '฿ '+ _attractionDetail!['price'].toString(),
+                        ),
+                        Flexible(
+                          child: Text(
+                          formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                           ),
-                        Text(
-                          '฿ '+ _attractionDetail!['price'].toString(),
+                        ),
+                        Flexible(
+                          child: Text(
+                          formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                           ),
+                        ),
                       ],
                     ),
                   ),
@@ -163,7 +170,7 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                             ),
                               ),
                             Text(
-                              'Yoo',
+                              widget.matchingClothesbrand != null ? '${widget.matchingClothesbrand['c_brand']}' : 'null',
                               style: TextStyle(
                               fontSize: 16.0,
                               color: Colors.black,
@@ -186,7 +193,7 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                             ),
                               ),
                             Text(
-                              'Yoo',
+                              widget.matchingClothesName,
                               style: TextStyle(
                               fontSize: 16.0,
                               color: Colors.black,
@@ -209,12 +216,12 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                             ),
                               ),
                             Text(
-                              'Yoo',
+                              formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
                               style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 16.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
                               )
                           ],
                         ),
@@ -356,7 +363,7 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => createPostProductScreen())
+                              MaterialPageRoute(builder: (context) => createPostProductScreen(id : widget.id))
                             );
                           },
                           child: Container(
@@ -382,7 +389,10 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context)=> BuyProduct())
+                              MaterialPageRoute(builder: (context)=> BuyProduct(id : widget.id, matchingClothesName : widget.matchingClothesName, 
+                              matchingClothesbrand: widget.matchingClothesbrand,
+                              
+                              ))
                             );
                           },
                           child: Container(
@@ -407,5 +417,24 @@ class _AttractionDetailPageState extends State<AttractionDetailPage> {
               ))
               ),
               );
+  }
+  Future<void> getAllClothes() async {
+  final response = await http.get(
+    Uri.parse('http://10.0.2.2:4000/clothes'),
+  );
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    final product = data.firstWhere((product) => product['id'] == widget.id, orElse: () => null);
+    if (product != null) {
+      setState(() {
+        _attractionDetail = product;
+        products = data;
+      });
+      } else {
+        print('not found id');
+      }
+  } else {
+    throw Exception('Failed to load clothes colors');
+    }
   }
 }

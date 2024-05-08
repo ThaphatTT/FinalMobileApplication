@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_clothes_shop/component/tabMenuHomeAppBar.dart';
 import 'package:flutter_clothes_shop/component/profile_screen.dart';
-import 'package:flutter_clothes_shop/component/component_part/createProduct.dart';
+import 'package:flutter_clothes_shop/component/component_part/Product/createProduct.dart';
 import 'package:flutter_clothes_shop/component/component_part/profile_detail.dart';
+import 'package:flutter_clothes_shop/component/component_part/homeScreen.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -43,7 +44,7 @@ class _TabMenuButton extends State<TabMenuButton> {
  void onLoginSuccess() async {
     setState(() {
       _isLoggedIn = true;
-      _selectedIndex = 1;
+      _selectedIndex = 0;
       _textLogin = 'Profile';
     });
     _isAdmin = await isAdmin();
@@ -59,11 +60,15 @@ class _TabMenuButton extends State<TabMenuButton> {
       _textLogin = 'Login';
     });
   }
+  void initState() {
+    super.initState();
+    checkToken();
+  }
 
   @override
   Widget build(BuildContext context) {
    final _widgetOptions = <Widget>[
-      TabMenuHomeAppBar(),
+      HomeScreen(),
       _isLoggedIn ? profileDetail(onLogout: onLogout) : Profile_HomeScreen(onLoginSuccess: onLoginSuccess),
     ];
 
@@ -115,7 +120,7 @@ class _TabMenuButton extends State<TabMenuButton> {
       final responseBody = jsonDecode(response.body);
       final user = responseBody['user'];
       final role = user['permission'];
-      if(role == 1) {
+      if(role == 2) {
         return true;
       }else{
         return false;
@@ -123,6 +128,16 @@ class _TabMenuButton extends State<TabMenuButton> {
     } else {
       print('server status non-respone');
       return false;
+    }
+  }
+  
+  void checkToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null || token.isEmpty) {
+      onLogout();
+    } else {
+      onLoginSuccess();
     }
   }
 

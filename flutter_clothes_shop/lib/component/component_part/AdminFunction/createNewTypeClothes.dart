@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class createNameClothes extends StatefulWidget {
-  const createNameClothes({super.key});
+class createNewTypeClothes extends StatefulWidget {
+  const createNewTypeClothes({super.key});
   
   @override
-  _createNameClothesState createState() => _createNameClothesState();
+  _createNewTypeClothesState createState() => _createNewTypeClothesState();
 }
 
-class _createNameClothesState extends State<createNameClothes> {
+class _createNewTypeClothesState extends State<createNewTypeClothes> {
   final _formKey = GlobalKey<FormState>();
-  final _nameBrand = TextEditingController();
+  final _typeclothes = TextEditingController();
 
   @override
   void initState() {
@@ -22,7 +22,7 @@ class _createNameClothesState extends State<createNameClothes> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create a new name clothes'),
+        title: Text('Create a new type clothes'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -42,16 +42,16 @@ class _createNameClothesState extends State<createNameClothes> {
                   Expanded(
                     child: TextFormField(
                       minLines: 2,
-                      controller : _nameBrand,
+                      controller : _typeclothes,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
                       decoration: InputDecoration(
-                              labelText: 'input new clothes you want',
+                              labelText: 'input new type you want',
                               border: OutlineInputBorder()
                               ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter new clothes';
+                          return 'Please enter new brand';
                         }
                         return null;
                       },
@@ -68,7 +68,7 @@ class _createNameClothesState extends State<createNameClothes> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      createNameClothes();
+                      createNewTypeClothes();
                     }
                   },
                   child: const Text(
@@ -83,14 +83,14 @@ class _createNameClothesState extends State<createNameClothes> {
       ),
     );
   }
-  Future<void> createNameClothes() async {
-     final response = await http.post(
-      Uri.parse('http://10.0.2.2:4000/clothes/createNewClothes'),
+  Future<void> createNewTypeClothes() async {
+      final response = await http.post(
+      Uri.parse('http://10.0.2.2:4000/clothes/CreateNewType'),
       headers: <String, String>{
         'Content-Type' : 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String,String>{
-        'clothes_name' : _nameBrand.text ,
+        'clothes_type' : _typeclothes.text ,
       })
     );
 

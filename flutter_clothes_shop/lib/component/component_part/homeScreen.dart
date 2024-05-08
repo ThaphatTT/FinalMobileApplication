@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_clothes_shop/component/component_part/homeScreenDetail.dart';
+import 'package:intl/intl.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => HomeScreenState();
@@ -9,29 +11,40 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   List<dynamic> products = [];
-  List<dynamic> clothesNames = [];
-  var matchingClothesName;
+  List<dynamic> clothesBrand = [];
+  var clothesName;
+  var matchingClothesbrand;
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
   @override
   void initState() {
     super.initState();
     getAllClothes();
-    getAllClothesNames();
+    getAllBrands();
+    
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      appBar: AppBar(
+        title: Image.asset(
+          'assets/images/coat_hanger.png',
+          fit: BoxFit.cover,
+              height: 55,
+              width: 55,
+          ),
+      ),
       body: ListView.builder(
         itemCount: products.length,
         itemBuilder: (context, i) {
-          matchingClothesName = clothesNames.firstWhere((clothesName) => clothesName['id'] == products[i]['c_name'], orElse: () => null);
+          matchingClothesbrand = clothesBrand.firstWhere((clothesBrand) => clothesBrand['id'] == products[i]['c_brand'], orElse: () => {'id': null, 'name': null});
+          print(matchingClothesbrand);
           return GestureDetector( 
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AttractionDetailPage(id: products[i].id),
+                  builder: (context) => homeScreenDetailPage(id: products[i]['id'], matchingClothesName: products[i]['c_name'], matchingClothesbrand : matchingClothesbrand),
                 ),
               );
             },
@@ -43,7 +56,7 @@ class HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.topLeft,
                     margin: EdgeInsets.fromLTRB(0, 5, 0, 30),
                     child: Text(
-                      matchingClothesName != null && matchingClothesName['clothes_name'] != null ? matchingClothesName['clothes_name'] : 'Unknown',
+                      products[i]['c_name'],
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
@@ -54,13 +67,19 @@ class HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.topLeft,
                     child: Column(
                       children: [
-                        Text('Original price'),
-                        Text(
-                          '฿ ' + products[i]['c_price'].toString(),
-                          style: TextStyle(
-                            fontSize: 25.0,
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
+                        Container(
+                          width: double.infinity,
+                          child: Text('Original price'),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: Text(
+                            formatCurrency.format(num.parse(products[i]['c_price'])),
+                            style: TextStyle(
+                              fontSize: 25.0,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
@@ -82,30 +101,38 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
   Future<void> getAllClothes() async {
-    final response = await http.get(
-      Uri.parse('http://10.0.2.2:4000/clothes'),
-    );
+  final response = await http.get(
+    Uri.parse('http://10.0.2.2:4000/clothes'),
+  );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    if (mounted) {
       setState(() {
         products = data.map((i) => i as Map<String,dynamic>).toList();
       });
-    } else {
-      throw Exception('Failed to load clothes');
     }
+  } else {
+    throw Exception('Failed to load clothes');
   }
-  Future<void> getAllClothesNames() async {
-    final response = await http.get(
-      Uri.parse('http://10.0.2.2:4000/clothes/getAllClothes'),
-    );
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+  print(products);
+}
+
+Future<void> getAllBrands() async {
+  final response = await http.get(
+    Uri.parse('http://10.0.2.2:4000/clothes/getAllBrands'),
+  );
+  if (response.statusCode == 200) {
+    List<dynamic> body = jsonDecode(response.body);
+    List<Map<String, dynamic>> brands = body.map((dynamic item) => {'id': item['id'], 'c_brand': item['clothes_brand']}).toList();
+    if (mounted) {
       setState(() {
-        clothesNames = data;
+        clothesBrand = brands;
       });
-    } else {
-      throw Exception('Failed to load clothes names');
     }
+  } else {
+    throw Exception('Failed to load brands');
   }
+}
+
 }
