@@ -168,7 +168,11 @@ class LoginScreenState extends State<Profile_HomeScreen>{
         final token = responseBody['token'];
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
-        widget.onLoginSuccess();
+        if (mounted) {
+          setState(() {
+             widget.onLoginSuccess();
+          });
+        }
       } else {
         print('server status non-respone');
       }

@@ -137,8 +137,10 @@ Widget build(BuildContext context) {
             'c_size': result['c_size'],
             'c_typeId': result['c_type'],
             'c_price': result['c_price'],
+            'p_status': result['p_status'],
             'images': await getImages(result['id']),
           };
+          if(post['p_status'] != "The product has been purchased")
           setState(() {
             postOptions.add(post);
           });
