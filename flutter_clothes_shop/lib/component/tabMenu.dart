@@ -4,6 +4,7 @@ import 'package:flutter_clothes_shop/component/tabMenuHomeAppBar.dart';
 import 'package:flutter_clothes_shop/component/profile_screen.dart';
 import 'package:flutter_clothes_shop/component/component_part/Product/createProduct.dart';
 import 'package:flutter_clothes_shop/component/component_part/profile_detail.dart';
+import 'package:flutter_clothes_shop/component/component_part/homeScreen.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -67,7 +68,7 @@ class _TabMenuButton extends State<TabMenuButton> {
   @override
   Widget build(BuildContext context) {
    final _widgetOptions = <Widget>[
-      TabMenuHomeAppBar(),
+      HomeScreen(),
       _isLoggedIn ? profileDetail(onLogout: onLogout) : Profile_HomeScreen(onLoginSuccess: onLoginSuccess),
     ];
 

@@ -26,6 +26,14 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Image.asset(
+          'assets/images/coat_hanger.png',
+          fit: BoxFit.cover,
+              height: 55,
+              width: 55,
+          ),
+      ),
       body: ListView.builder(
         itemCount: products.length,
         itemBuilder: (context, i) {

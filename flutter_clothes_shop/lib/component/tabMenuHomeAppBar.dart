@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_clothes_shop/component/component_part/homeScreen.dart';
+
 class TabMenuHomeAppBar extends StatelessWidget {
   const TabMenuHomeAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, 
+      length: 1, 
       child: Scaffold(
       appBar: AppBar(
         title : Image.asset(
@@ -19,16 +20,12 @@ class TabMenuHomeAppBar extends StatelessWidget {
         bottom: const TabBar(
           tabs: [
             Text('Shop All'),
-            Text('Shoes'),
-            Text('Apparel'),
           ],
       ),
       ),
       body: TabBarView(
         children: [
           HomeScreen(),
-          Text('Yooo'),
-          Text('Yooo'),
           ],
         ),
       )
