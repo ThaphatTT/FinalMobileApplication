@@ -109,7 +109,7 @@ app.get('/user/:id', (req, res) => {
   pool.getConnection((err,connection)=>{
     if(err) throw err;
     const { id } = req.params;
-    const sql = 'SELECT id, email, fname, lname, birthday FROM users WHERE id = ?'
+    const sql = 'SELECT id, email, fname, lname, birthday, address FROM users WHERE id = ?'
     pool.query(sql, [id], (error, results) => {
       if (error) throw error;
       if (results.length > 0) {
@@ -624,6 +624,57 @@ app.get('/order/status', (req, res) => {
   })
 })
 
+app.get('/order/Check', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const sql = "SELECT * FROM `order`";
+    pool.query(sql, (err, result) => {
+      if(err) throw err;
+      res.send(result);
+      console.log(result);
+    })
+    connection.release();
+  })
+})
+
+app.get('/order/ImagePayment/:id', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = 'SELECT `idOrder`, `img_payment` FROM `img_payment` WHERE `idOrder` = ?';
+    pool.query(sql,[id],(err, result) => {
+      if(err) throw err;
+      const imgPayment = result.map((item) => ({
+        ...item,
+        img_payment: Buffer.from(item.img_payment).toString('base64'),
+      }));
+      res.send(imgPayment);
+    })
+    connection.release();
+  })
+})
+
+app.post('/order/ChangeStatus/admin',(req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    const data = {
+      id: req.body.id,
+      o_status: req.body.o_status,
+    };
+    console.log(data.idPost);
+    console.log(`connected as id ${connection.threadId}`);
+    const sql = "UPDATE `order` SET `o_status` = ? WHERE `id` = ?";
+    pool.query(sql, [data.o_status, data.id], (error, results) => {
+      if (error) throw error;
+      res.send({ 
+        message: 'Change data successfully!',
+        data: data,
+        status: 'ok'
+      });
+    });
+    connection.release();
+  });
+});
 
 
 

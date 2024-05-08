@@ -6,14 +6,16 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-class orderBuy extends StatefulWidget {
-  const orderBuy({super.key});
-  
+import 'package:flutter_clothes_shop/component/component_part/AdminFunction/CheckOrder/CheckOrderById.dart';
+
+class OrderAccepted extends StatefulWidget {
+  const OrderAccepted({super.key});
+
   @override
-  State<orderBuy> createState() => _orderBuyState();
+  State<OrderAccepted> createState() => _OrderAcceptedState();
 }
 
-class _orderBuyState extends State<orderBuy> {
+class _OrderAcceptedState extends State<OrderAccepted> {
   Map<String, dynamic>? _post;
   List<Map<String, dynamic>> postOptions = [];
   List<Map<String, dynamic>> orderOptions = [];
@@ -26,16 +28,13 @@ class _orderBuyState extends State<orderBuy> {
   @override
   void initState() {
     super.initState();
-    getAllUsersProductBuyPost();
+    getAllOrder();
     getAllClothes();
     getAllOrderStatus();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Your Order Buy'),
-      ),
       body: ListView.builder(
       itemCount: postOptions.length,
       itemBuilder: (context, index) {
@@ -43,7 +42,15 @@ class _orderBuyState extends State<orderBuy> {
         matchingorderStatus = orderStatus.firstWhere((orderStatus) => orderStatus['id'] == orderOptions[index]['o_status'], orElse: () => {'id': null, 'name': null});
         return GestureDetector(
           onTap: () {
-
+            Navigator.push(
+              context,
+              MaterialPageRoute( builder: 
+              (context) => checkOrderById(
+                userBuy: orderOptions[index],
+                userSell: postOptions[index]
+                )
+              )
+            );
           },
           child: Container(
             margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
@@ -114,46 +121,38 @@ class _orderBuyState extends State<orderBuy> {
         );
       },
     ), 
-  );
+    );
   }
-  Future<void> getAllUsersProductBuyPost() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    if(token !=null && token.isNotEmpty){
-      final decodedToken = JwtDecoder.decode(token);
-      final userId = decodedToken['id'];
-      final response = await http.get(
-      Uri.parse('http://10.0.2.2:4000/order/orderBuying/Users/$userId'),
+  Future<void> getAllOrder() async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/order/Check'),
     );
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
-      if (body is Map<String, dynamic>) {
-        List<dynamic> results = body['results'];
-        for (var result in results) {
-          var post = {
-            'iduser': result['iduser'], 
-            'idpost': result['idpost'],
-            'date': result['date'],
-            'total': result['total'],
-            'o_status': result['o_status']
-          };
+      for (var result in body) {
+        var post = {
+          'id' : result['id'],
+          'iduser': result['iduser'], 
+          'idpost': result['idpost'],
+          'date': result['date'],
+          'total': result['total'],
+          'o_status': result['o_status'],
+          'images': await getImagesPayment(result['id'])
+        };
+        if(post['o_status'] == 3){
           setState(() {
-            orderOptions.add(post);
-          });
-          await getAllUsersProductSellPost(post['idpost']);
+          orderOptions.add(post);
+        });
+        await getAllUsersProductSellPost(post['idpost']);
         }
       }
     } else {
       throw Exception('Failed to load brands');
     }
-    }
-    else{
-      print('not found token');
-    }
-    print('User` post buy product');
+    print('Order user`s buy product');
     print(orderOptions);
   }
-   Future<void> getAllUsersProductSellPost(int idpost) async {
+  Future<void> getAllUsersProductSellPost(int idpost) async {
       final response = await http.get(
       Uri.parse('http://10.0.2.2:4000/order/orderSelling/UserBuying/$idpost'),
     );
@@ -164,6 +163,9 @@ class _orderBuyState extends State<orderBuy> {
         for (var result in results) {
           var post = {
             'p_id': result['id'], 
+            'u_id': result['u_id'],
+            'cc_id': result['cc_id'],
+            'ce_id': result['ce_id'],
             'c_id': result['c_id'], 
             'c_size': result['c_size'],
             'c_price': result['c_price'],
@@ -181,9 +183,9 @@ class _orderBuyState extends State<orderBuy> {
     print('user`s post product sell');
     print(postOptions);
   }
-  Future<List<Map<String, dynamic>>> getImages(int orderId) async {
+  Future<List<Map<String, dynamic>>> getImages(int postId) async {
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:4000/post/buyProduct/Image/$orderId'),
+      Uri.parse('http://10.0.2.2:4000/post/buyProduct/Image/$postId'),
     );
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -198,6 +200,24 @@ class _orderBuyState extends State<orderBuy> {
       throw Exception('Failed to load images');
     }
   }
+   Future<List<Map<String, dynamic>>> getImagesPayment(int id) async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/order/ImagePayment/$id'),
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data.map<Map<String, dynamic>>((i) {
+        if (i is Map<String, dynamic>) {
+          return i;
+        } else {
+          throw Exception('Invalid data format');
+        }
+      }).toList();
+    } else {
+      throw Exception('Failed to load images');
+    }
+  }
+
   Future<void> getAllClothes() async {
     final response = await http.get(
       Uri.parse('http://10.0.2.2:4000/clothes'),

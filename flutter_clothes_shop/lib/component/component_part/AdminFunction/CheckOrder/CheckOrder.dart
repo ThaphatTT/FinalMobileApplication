@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_clothes_shop/component/component_part/AdminFunction/CheckOrder/OrderPadding.dart';
+import 'package:flutter_clothes_shop/component/component_part/AdminFunction/CheckOrder/OrderResolved.dart';
+import 'package:flutter_clothes_shop/component/component_part/AdminFunction/CheckOrder/OrderAccepted.dart';
+
 class CheckOrder extends StatefulWidget {
   const CheckOrder({super.key});
 
@@ -11,7 +15,7 @@ class _CheckOrderState extends State<CheckOrder> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4, 
+      length: 3, 
       child: Scaffold(
       appBar: AppBar(
         title : Text('Check Order'),
@@ -19,17 +23,15 @@ class _CheckOrderState extends State<CheckOrder> {
           tabs: [
             Text('PADDING'),
             Text('REJECTED'),
-            Text('RESOLVED'),
             Text('ACCEPTED'),
           ],
       ),
       ),
       body: TabBarView(
         children: [
-          Text('Yooo'),
-          Text('Yooo'),
-          Text('Yooo'),
-          Text('Yooo'),
+          OrderPadding(),
+          OrderResolved(),
+          OrderAccepted(),
           ],
         ),
       )

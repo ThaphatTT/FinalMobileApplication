@@ -17,7 +17,7 @@ class BuyProduct extends StatefulWidget {
 
 class _BuyProductState extends State<BuyProduct> {
   final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
-  Map<String, dynamic>? _post;
+  List<dynamic> products = [];
   List<Map<String, dynamic>> postOptions = [];
   List<Map<String, dynamic>> conditionDropdownOptions = [];
   List<Map<String, dynamic>> equipmentDropdownOptions = [];
@@ -30,6 +30,7 @@ class _BuyProductState extends State<BuyProduct> {
     getAllUserProductPost();
     getAllCondition();
     getAllEquipment();
+    getAllClothes();
   }
   @override
 Widget build(BuildContext context) {
@@ -196,7 +197,6 @@ Widget build(BuildContext context) {
     } else {
       throw Exception('Failed to load images');
     }
-
   }
 
   String getConditionName(int id) {
@@ -207,4 +207,20 @@ Widget build(BuildContext context) {
     return equipmentDropdownOptions.firstWhere((option) => option['id'] == id)['name'];
   }
 
+  Future<void> getAllClothes() async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/clothes'),
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (mounted) {
+        setState(() {
+          products = data.map((i) => i as Map<String,dynamic>).toList();
+        });
+      }
+    } else {
+      throw Exception('Failed to load clothes');
+    }
+    print(products);
+  }
 }
