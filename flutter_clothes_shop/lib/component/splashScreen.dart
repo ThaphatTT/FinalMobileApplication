@@ -80,7 +80,7 @@ class Dot extends StatelessWidget {
             width: 10,
             height: 50,
             decoration: BoxDecoration(
-              color: Color.fromRGBO(178, 0, 0, 1),
+              color: Color.fromRGBO(0, 65, 142, 1),
               shape: BoxShape.circle,
             ),
           ),

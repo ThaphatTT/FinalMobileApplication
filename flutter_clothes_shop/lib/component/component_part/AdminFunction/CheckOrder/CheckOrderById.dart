@@ -56,6 +56,8 @@ class _checkOrderByIdState extends State<checkOrderById> {
     String equipmentName = getEquipmentName(equipmentDropdownOptions, widget.userSell['ce_id']);
     String conditionName = getEquipmentName(conditionDropdownOptions, widget.userSell['cc_id']);
     String brandName = getBrand(products, clothesBrand);
+    print(_orderStatus);
+    print(widget.userSell['p_id']);
     return Scaffold(
       appBar: AppBar(
         title: Text('Order Detail'),
@@ -66,14 +68,14 @@ class _checkOrderByIdState extends State<checkOrderById> {
             Container(
               margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
               height: 90,
-              color: Colors.amber,
+              color: Colors.grey[200],
               child : Row(
                 children: [
                   if (bytes != null) 
                   Container(
                     color: Colors.green,
                     width:  150,
-                    child: Image.memory(bytes),
+                    child: Image.memory(bytes,fit: BoxFit.cover,),
                   ),
                   Flexible(
                     child: Column(
@@ -780,7 +782,6 @@ class _checkOrderByIdState extends State<checkOrderById> {
       } else {
         print('server status non-respone');
       }
-    
   }
   Future<void> getUserSellerData() async {
       final userId = widget.userSell['u_id'].toString();
@@ -885,12 +886,35 @@ class _checkOrderByIdState extends State<checkOrderById> {
       print('Order`s change successed!');
       var data = jsonDecode(response.body);
       if(data['status'] == 'ok'){
-        Navigator.pop(
-          context
-        );
+        await changeStatusUserSell();
+        Navigator.pop(context);
       }
     }else{
       print('Failed to create a ImgPayment');
     }
+  }
+  Future<void> changeStatusUserSell() async{
+    if (_orderStatus!['id'] == 2) {
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:4000/order/ChangeStatus/postuserSell/admin'),
+      headers: <String, String>{
+        'Content-Type' : 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String,String>{
+        'id' : widget.userSell['p_id'].toString(),
+        'p_status' : 'Waiting customer buy order',
+      })
+    );
+
+    if(response.statusCode == 200){
+      print('Post`s change successed!');
+      var data = jsonDecode(response.body);
+      if(data['status'] == 'ok'){
+        Navigator.pop(context);
+      }
+    }else{
+      print('Failed to create a ImgPayment');
+    }
+  }
   }
 }

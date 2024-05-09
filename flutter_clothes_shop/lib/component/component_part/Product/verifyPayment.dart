@@ -142,7 +142,9 @@ class _verifyPaymentState extends State<verifyPayment> {
     );
   }
   Future<void> pickFile() async {
-      FilePickerResult? result = await FilePicker.platform.pickFiles();
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+      );
       if (result != null) {
           // รับเส้นทางไฟล์
           String? filePath = result.files.single.path;

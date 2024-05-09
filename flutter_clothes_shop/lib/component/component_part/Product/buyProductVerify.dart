@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:flutter_clothes_shop/component/component_part/Product/verifyPayment.dart';
 import 'package:transparent_image/transparent_image.dart';
 class buyProductVerify extends StatefulWidget {
@@ -22,6 +25,7 @@ class buyProductVerify extends StatefulWidget {
 }
 
 class _buyProductVerifyState extends State<buyProductVerify> {
+  Map<String, dynamic>? user = null;
   Map<String, dynamic>? _product;
   int shippingService = 100;
   final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
@@ -34,11 +38,11 @@ class _buyProductVerifyState extends State<buyProductVerify> {
   @override
   void initState() {
     super.initState();
+    getUserData();
     calculateTotal();
   }
   @override
   Widget build(BuildContext context) {
-    print(total);
     return Scaffold(
       appBar: AppBar(
         title: Text('Buy'),
@@ -47,15 +51,43 @@ class _buyProductVerifyState extends State<buyProductVerify> {
         child : Column(
           children: [
             Container(
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
               height: 90,
-              color: Colors.amber,
+              color: Colors.grey[200],
               child : Row(
                 children: [
                   Container(
-                    color: Colors.green,
-                    width:  150,
-                    child: Image.asset('assets/images/coat_hanger.png'),
+                    width: 150,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.image.length,
+                      itemBuilder: (context, index) {
+                        Uint8List bytes = base64Decode(widget.image[index]['img_post']);
+                        return GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: Image.memory(bytes, fit: BoxFit.cover),
+                                  actions: [
+                                    TextButton(
+                                      child: Text('Close'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            width: 150,
+                            child: Image.memory(bytes, fit: BoxFit.cover),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   Flexible(
                     child: Column(
@@ -251,7 +283,6 @@ class _buyProductVerifyState extends State<buyProductVerify> {
                               },
                             ),
                           )
-
                         ],
                       ),
                     ),
@@ -280,7 +311,7 @@ class _buyProductVerifyState extends State<buyProductVerify> {
                     margin: EdgeInsets.fromLTRB(15, 0, 5, 0),
                     width: double.infinity,
                     child: Text(
-                      'Your Address',
+                      user != null ? user!['address'] : 'null',
                       style: TextStyle(
                                 fontSize: 18.0,
                                 color: Colors.grey,
@@ -517,5 +548,28 @@ class _buyProductVerifyState extends State<buyProductVerify> {
         )
       )
     );
+  }
+  Future<void> getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    // print('Yoooooooooooooooo');
+    // print(token);
+    if (token != null && token.isNotEmpty) {
+      final decodedToken = JwtDecoder.decode(token);
+      // print('this is decoded Tokennnnnnnnnnnnn');
+      // print(decodedToken);
+      final userId = decodedToken['id'];
+      final response = await http.get(
+        Uri.parse('http://10.0.2.2:4000/user/$userId'),
+      );
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        setState(() {
+          user = responseBody['user'];
+        });
+      } else {
+        print('server status non-respone');
+      }
+    }
   }
 }

@@ -125,20 +125,25 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                     controller: _birthdayController,
                     decoration: InputDecoration(
-                            labelText: 'Your Birthday',
-                            filled : true,
-                            prefixIcon: Icon(Icons.calendar_today),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue)
-                            )
-                            ),
-                            readOnly : true,
-                            onTap: (){
-                              _selectDate();
-                            },
+                      labelText: 'Your Birthday',
+                      labelStyle: TextStyle(
+                        color: Colors.black
+                      ),
+                      filled : true,
+                      fillColor: Colors.white,
+                      focusColor: Colors.white,
+                      prefixIcon: Icon(Icons.calendar_today),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey)
+                      )
+                      ),
+                      readOnly : true,
+                      onTap: (){
+                        _selectDate();
+                      },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your birthday';
@@ -226,24 +231,37 @@ class _RegisterPageState extends State<RegisterPage> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Confirmation'),
-                            content: Text('Please check your data is correct, Do you want to register?'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('YES'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  registerUser();
-                                },
-                              ),
-                              TextButton(
-                                child: Text('NO'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
+                          return Theme(
+                            data: ThemeData(dialogBackgroundColor: Colors.white), // เปลี่ยนสีที่นี่
+                            child: AlertDialog(
+                              title: Text('Confirmation'),
+                              content: Text('Please check your data is correct, Do you want to register?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text(
+                                    'NO',
+                                    style: TextStyle(
+                                      color: Colors.grey
+                                    ),
+                                    ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    'YES',
+                                    style: TextStyle(
+                                      color: Colors.black
+                                    ),
+                                    ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    registerUser();
+                                  },
+                                ),
+                              ],
+                            ),
                           );
                         },
                       );
@@ -267,7 +285,20 @@ class _RegisterPageState extends State<RegisterPage> {
       context: context, 
       initialDate: DateTime.now(),
       firstDate: DateTime(2000), 
-      lastDate: DateTime(2100)
+      lastDate: DateTime(2100),
+      builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: ThemeData.light().copyWith(
+          colorScheme: ColorScheme.light(
+            primary: Colors.grey,
+          ),
+          buttonTheme: ButtonThemeData(
+            textTheme: ButtonTextTheme.primary
+          ),
+        ),
+        child: child!,
+      );
+    }
       );
 
       if(_picked !=null){

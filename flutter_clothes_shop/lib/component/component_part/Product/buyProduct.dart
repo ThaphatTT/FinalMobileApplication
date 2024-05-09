@@ -62,14 +62,15 @@ Widget build(BuildContext context) {
           child: Container(
             margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
             height: 90,
-            color: Colors.amber,
+            color: Colors.grey[200],
             child: Row(
               children: [
                 Container(
-                  color: Colors.green,
                   width: 150,
                   child: postOptions[index]['images'].isNotEmpty
-                  ? Image.memory(base64Decode(postOptions[index]['images'][0]['img_post']))
+                  ? Image.memory(base64Decode(postOptions[index]['images'][0]['img_post']),
+                  fit: BoxFit.cover,
+                  )
                   : Container(),
                 ),
                 Flexible(
@@ -77,23 +78,23 @@ Widget build(BuildContext context) {
                     children: [
                       Container(
                         alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                        margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
                         child: Text(
                           getConditionName(postOptions[index]['cc_id']),
                         ),
                       ),
                       Container(
                         alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                        margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
                         child: Text(
                           getEquipmentName(postOptions[index]['ce_id']),
                         ),
                       ),
                       Container(
                         alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                        margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
                         child: Text(
-                          postOptions[index]['c_size'].toString()
+                          'Size ' +postOptions[index]['c_size'].toString()
                         ),
                       ),
                     ],

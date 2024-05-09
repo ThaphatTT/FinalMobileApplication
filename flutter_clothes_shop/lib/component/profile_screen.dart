@@ -138,7 +138,12 @@ class LoginScreenState extends State<Profile_HomeScreen>{
                               MaterialPageRoute(builder: (context) => const RegisterPage()),
                             );
                           },
-                          child: Text('Register'),
+                          child: Text(
+                            'Register',
+                            style: TextStyle(
+                              color: Colors.blue
+                            ),
+                            ),
                         ),
                       ],
                     ),
@@ -168,13 +173,31 @@ class LoginScreenState extends State<Profile_HomeScreen>{
         final token = responseBody['token'];
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
-        if (mounted) {
-          setState(() {
-             widget.onLoginSuccess();
-          });
+        if(responseBody['status'] == 'ok'){
+          if (mounted) {
+            setState(() {
+              widget.onLoginSuccess();
+            });
+          }
         }
       } else {
-        print('server status non-respone');
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Error'),
+                content: Text('Failed to sign in. Please try again.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
       }
   }
 

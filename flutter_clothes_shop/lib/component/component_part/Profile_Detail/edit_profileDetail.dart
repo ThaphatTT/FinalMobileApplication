@@ -34,9 +34,9 @@ class _editProfileDetailState extends State<editProfileDetail> {
       appBar: AppBar(
         title: Text('Edit Profile'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back), // ใช้ไอคอนที่คุณต้องการ
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // นำทางกลับไปยังหน้าก่อนหน้า
+            Navigator.pop(context);
           },
         ),
       ),

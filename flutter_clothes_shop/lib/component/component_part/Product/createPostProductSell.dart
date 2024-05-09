@@ -258,68 +258,87 @@ class _createPostProductScreenState extends State<createPostProductScreen> {
     }
     
     Future<void> createPostUserProduct() async{
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
-      if (token != null && token.isNotEmpty) {
-      final decodedToken = JwtDecoder.decode(token);
-      print(decodedToken['id']);
-      final response = await http.post(
-        Uri.parse('http://10.0.2.2:4000/post/createPostUserProduct'),
-        headers: <String, String>{
-          'Content-Type' : 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String,String>{
-          'user_id' :  decodedToken['id'].toString(),
-          'clothes_id' : widget.id.toString(),
-          'condition_id' : _condition!['id'].toString(),
-          'equipment_id' : _equipment!['id'].toString(),
-          'sizeclothes_id' : _sizeclothes!['name'].toString(),
-          'typeclothes_id' : _typeclothes!['id'].toString(),
-          'product_price' : _price.text,
-          'post_status' : 'Waiting customer buy order'
-        })
-      );
-
-      if(response.statusCode == 200){
-        print('User`s post created successed!');
-        var data = jsonDecode(response.body);
-        if(data['status'] == 'ok'){
-          createImage(data!['postId']);
-        }
-      }else{
-        print('Failed to create a user`s post');
-      }
-      }
+    if (_condition == null || _equipment == null || _typeclothes == null || _sizeclothes == null || _price.text.isEmpty || _imagePaths == null || _imagePaths!.isEmpty) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text('Please fill in all the fields and attach an image.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+    return;
   }
-  Future<void> createImage(int postId) async {
-    try {
-      var request = http.MultipartRequest('POST', Uri.parse('http://10.0.2.2:4000/post/createImage'));
-      request.fields['postId'] = postId.toString();
-      if (_imagePaths != null) {
-        for (var imagePath in _imagePaths!) {
-          request.files.add(await http.MultipartFile.fromPath('img_post', imagePath));
-          print(imagePath);
-        }
-      }
-      print(_imagePaths);
-      print(request);
-
-      var response = await request.send();
-      print(response);
-      if (response.statusCode == 200) {
-        print('Clothes created successed!');
-        response.stream.transform(utf8.decoder).listen((value) {
-          var data = jsonDecode(value);
-          if (data['status'] == 'ok') {
-            Navigator.pop(context);
-          }
-        }); 
-      } else {
-        print('Failed to create many image');
-      }
-    } catch (e) {
-      print('An error occurred: $e');
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+  if (token != null && token.isNotEmpty) {
+  final decodedToken = JwtDecoder.decode(token);
+  print(decodedToken['id']);
+  final response = await http.post(
+    Uri.parse('http://10.0.2.2:4000/post/createPostUserProduct'),
+    headers: <String, String>{
+      'Content-Type' : 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String,String>{
+      'user_id' :  decodedToken['id'].toString(),
+      'clothes_id' : widget.id.toString(),
+      'condition_id' : _condition!['id'].toString(),
+      'equipment_id' : _equipment!['id'].toString(),
+      'sizeclothes_id' : _sizeclothes!['name'].toString(),
+      'typeclothes_id' : _typeclothes!['id'].toString(),
+      'product_price' : _price.text,
+      'post_status' : 'Waiting customer buy order'
+    })
+  );
+  if(response.statusCode == 200){
+    print('User`s post created successed!');
+    var data = jsonDecode(response.body);
+    if(data['status'] == 'ok'){
+      createImage(data!['postId']);
     }
+  }else{
+    print('Failed to create a user`s post');
+  }
+  }
+}
+Future<void> createImage(int postId) async {
+  try {
+    var request = http.MultipartRequest('POST', Uri.parse('http://10.0.2.2:4000/post/createImage'));
+    request.fields['postId'] = postId.toString();
+    if (_imagePaths != null) {
+      for (var imagePath in _imagePaths!) {
+        request.files.add(await http.MultipartFile.fromPath('img_post', imagePath));
+        print(imagePath);
+      }
+    }
+    print(_imagePaths);
+    print(request);
+
+    var response = await request.send();
+    print(response);
+    if (response.statusCode == 200) {
+      print('Clothes created successed!');
+      response.stream.transform(utf8.decoder).listen((value) {
+        var data = jsonDecode(value);
+        if (data['status'] == 'ok') {
+          Navigator.pop(context);
+        }
+      }); 
+    } else {
+      print('Failed to create many image');
+    }
+  } catch (e) {
+    print('An error occurred: $e');
+  }
   }
 
 }

@@ -25,11 +25,18 @@ class profileDetail extends StatefulWidget {
 
 class _profileDetailState extends State<profileDetail> {
   Map<String, dynamic>? user = null;
+  bool _isAdmin = false;
   @override
   void initState() {
     super.initState();
     getUserData();
+    checkAdminStatus();
   }
+  void checkAdminStatus() async {
+    _isAdmin = await isAdmin();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,9 +54,9 @@ class _profileDetailState extends State<profileDetail> {
                       margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(500)),
-                        color: Colors.amber,
+                        color: Colors.white,
                         boxShadow: [
-                          BoxShadow(color: Colors.green, spreadRadius: 1),
+                          BoxShadow(color: Colors.grey, spreadRadius: 1),
                         ],
                       ),
                       alignment: Alignment.center,
@@ -118,16 +125,19 @@ class _profileDetailState extends State<profileDetail> {
                       )
                   ],
                 ),
-                Divider(
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  width: 300,
+                  child: Divider(
                         height: 10,
                         thickness: 1,
                         color: Colors.black,
                         indent: 1,
                         endIndent: 1,
                       ),
+                ),
                 Container(
                   child: Material(
-                  color: Colors.grey[300],
                   child: InkWell(
                     onTap: () {
                       Navigator.push(
@@ -156,7 +166,6 @@ class _profileDetailState extends State<profileDetail> {
                 ),
                 Container(
                   child: Material(
-                  color: Colors.grey[300],
                   child: InkWell(
                     onTap: () {
                       Navigator.push(
@@ -185,7 +194,6 @@ class _profileDetailState extends State<profileDetail> {
                 ),
                 Container(
                   child: Material(
-                  color: Colors.grey[300],
                   child: InkWell(
                     onTap: () {
                       Navigator.push(
@@ -214,7 +222,6 @@ class _profileDetailState extends State<profileDetail> {
                 ),
                 Container(
                   child: Material(
-                  color: Colors.grey[300],
                   child: InkWell(
                     onTap: () {
                       Navigator.push(
@@ -242,120 +249,142 @@ class _profileDetailState extends State<profileDetail> {
                 ),
                 ),
                 Container(
-                  child: Material(
-                  color: Colors.grey[300],
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => CheckOrder())
-                        );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 50,
-                      child: Row(
-                        children: [
-                          Container(
-                            child: Icon(Icons.location_on_outlined)
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                            child: Text('Check order')
+                  margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  width: 300,
+                  child: Divider(
+                        height: 10,
+                        thickness: 1,
+                        color: Colors.black,
+                        indent: 1,
+                        endIndent: 1,
+                      ),
+                ),
+                Column(
+                  children: _isAdmin ?[
+                    Container(
+                      child: Material(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => CheckOrder())
+                            );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 50,
+                          child: Row(
+                            children: [
+                              Container(
+                                child: Icon(Icons.shopify)
+                              ),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                child: Text('Check order')
+                              )
+                            ],
                           )
-                        ],
-                      )
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                ),
-                Container(
-                  child: Material(
-                  color: Colors.grey[300],
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => createNameBrand())
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 50,
-                      child: Row(
-                        children: [
-                          Container(
-                            child: Icon(Icons.location_on_outlined)
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                            child: Text('Create a new name brand')
+                    ),
+                    Container(
+                      child: Material(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => createNameBrand())
+                          );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 50,
+                          child: Row(
+                            children: [
+                              Container(
+                                child: Icon(Icons.add_box)
+                              ),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                child: Text('Create a new name brand')
+                              )
+                            ],
                           )
-                        ],
-                      )
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                ),
-                Container(
-                  child: Material(
-                  color: Colors.grey[300],
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => createNewSizeClothes())
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 50,
-                      child: Row(
-                        children: [
-                          Container(
-                            child: Icon(Icons.location_on_outlined)
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                            child: Text('Create a new size clothes')
+                    ),
+                    Container(
+                      child: Material(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => createNewSizeClothes())
+                          );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 50,
+                          child: Row(
+                            children: [
+                              Container(
+                                child: Icon(Icons.add_box)
+                              ),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                child: Text('Create a new size clothes')
+                              )
+                            ],
                           )
-                        ],
-                      )
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                ),
-                Container(
-                  child: Material(
-                  color: Colors.grey[300],
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => createNewTypeClothes())
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 50,
-                      child: Row(
-                        children: [
-                          Container(
-                            child: Icon(Icons.location_on_outlined)
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                            child: Text('Create a new type clothes')
+                    ),
+                    Container(
+                      child: Material(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => createNewTypeClothes())
+                          );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 50,
+                          child: Row(
+                            children: [
+                              Container(
+                                child: Icon(Icons.add_box)
+                              ),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                child: Text('Create a new type clothes')
+                              )
+                            ],
                           )
-                        ],
-                      )
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      width: 300,
+                      child: Divider(
+                            height: 10,
+                            thickness: 1,
+                            color: Colors.black,
+                            indent: 1,
+                            endIndent: 1,
+                          ),
+                    ),
+                  ] : []
                 ),
                 Container(
                 margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -410,6 +439,32 @@ class _profileDetailState extends State<profileDetail> {
       } else {
         print('server status non-respone');
       }
+    }
+  }
+  Future<bool> isAdmin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null || token.isEmpty) {
+    return false;
+    }
+    final decodedToken = JwtDecoder.decode(token);
+    final userId = decodedToken['id'];
+    final response = await http.get(
+    Uri.parse('http://10.0.2.2:4000/user/permission/$userId'),
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      final user = responseBody['user'];
+      final role = user['permission'];
+      if(role == 2) {
+        return true;
+      }else{
+        return false;
+      }
+    } else {
+      print('server status non-respone');
+      return false;
     }
   }
 }

@@ -49,9 +49,11 @@ class HomeScreenState extends State<HomeScreen> {
               );
             },
             child: Card(
+              color: Colors.white,
               child: Column(
                 children: [
-                  Image.memory(base64Decode(products[i]['c_image'])),
+                  Image.memory(base64Decode(products[i]['c_image']),
+                  ),
                   Container(
                     alignment: Alignment.topLeft,
                     margin: EdgeInsets.fromLTRB(0, 5, 0, 30),
@@ -85,13 +87,6 @@ class HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  Container(
-                    child: Column(
-                      children: [
-
-                      ],
-                    ),
-                  )
                 ],
               ),
             ),
