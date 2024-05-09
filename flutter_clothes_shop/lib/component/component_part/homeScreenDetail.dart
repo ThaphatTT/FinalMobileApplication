@@ -116,7 +116,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                         ),
                         Flexible(
                           child: Text(
-                            lowestClothes != null ? formatCurrency.format(lowestClothes[0] ['c_price']) : 'not found',
+                            lowestClothes != null && lowestClothes.isNotEmpty ? formatCurrency.format(lowestClothes[0] ['c_price']) : 'not found',
                             style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.black,
@@ -126,7 +126,7 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                         ),
                         Flexible(
                           child: Text(
-                          highestClothes != null ? formatCurrency.format(highestClothes[0]['c_price']) : 'not found',
+                          highestClothes != null && highestClothes.isNotEmpty ? formatCurrency.format(highestClothes[0]['c_price']) : 'not found',
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black,
