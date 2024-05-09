@@ -44,14 +44,15 @@ class _orderSellState extends State<orderSell> {
           child: Container(
             margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
             height: 90,
-            color: Colors.amber,
+            color: Colors.grey[200],
             child: Row(
               children: [
                 Container(
-                  color: Colors.green,
                   width: 150,
                   child: postOptions[index]['images'].isNotEmpty
-                  ? Image.memory(base64Decode(postOptions[index]['images'][0]['img_post']))
+                  ? Image.memory(base64Decode(postOptions[index]['images'][0]['img_post']),
+                  fit: BoxFit.cover,
+                  )
                   : Container(),
                 ),
                 Flexible(
@@ -81,7 +82,7 @@ class _orderSellState extends State<orderSell> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.fromLTRB(2, 0, 0, 0),
                         child: Text(
-                          postOptions[index]['p_status'],
+                          'Status : ' + postOptions[index]['p_status'],
                           style: TextStyle(
                             fontSize: 12.0,
                             color: Colors.black,

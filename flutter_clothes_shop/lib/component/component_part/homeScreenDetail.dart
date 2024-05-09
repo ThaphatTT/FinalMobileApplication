@@ -24,13 +24,17 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
   bool _PDisVisible = false;
   bool _SMisVisible = false;
   final formatCurrency = NumberFormat.simpleCurrency(locale: 'th_TH');
+  List<dynamic> lowestClothes = [];
+  List<dynamic> highestClothes = [];
 
   @override
   void initState() {
     super.initState();
     getAllClothes();
-    print(widget.matchingClothesName);
-    print(widget.id);
+    // print(widget.matchingClothesName);
+    // print(widget.id);
+    getLowestClothes();
+    getHighestClothes();
   }
 
 
@@ -79,14 +83,14 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                           ),
                           ),
                         Text(
-                          'Highest Bid',
+                          'Lowest price',
                           style: TextStyle(
                             fontSize: 13.0,
                             color: Colors.black,
                           ),
                           ),
                         Text(
-                          'Last Sale',
+                          'Highest price',
                           style: TextStyle(
                             fontSize: 13.0,
                             color: Colors.black,
@@ -112,17 +116,17 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                         ),
                         Flexible(
                           child: Text(
-                          formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+                            lowestClothes != null ? formatCurrency.format(lowestClothes[0] ['c_price']) : 'not found',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         Flexible(
                           child: Text(
-                          formatCurrency.format(num.parse(_attractionDetail!['c_price'])),
+                          highestClothes != null ? formatCurrency.format(highestClothes[0]['c_price']) : 'not found',
                           style: TextStyle(
                             fontSize: 20.0,
                             color: Colors.black,
@@ -391,7 +395,6 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
                               context,
                               MaterialPageRoute(builder: (context)=> BuyProduct(id : widget.id, matchingClothesName : widget.matchingClothesName, 
                               matchingClothesbrand: widget.matchingClothesbrand,
-                              
                               ))
                             );
                           },
@@ -435,6 +438,40 @@ class _homeScreenDetailPageState extends State<homeScreenDetailPage> {
       }
   } else {
     throw Exception('Failed to load clothes colors');
+    }
+  }
+  Future<void> getLowestClothes() async {
+    var clothes_id = widget.id;
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/post/lowestpost/$clothes_id'),
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      List<Map<String, dynamic>> post = body.map((dynamic item) => {'id': item['id'], 'c_price': item['c_price']}).toList();
+      if (mounted) {
+        setState(() {
+          lowestClothes = post;
+        });
+      }
+    } else {
+      throw Exception('Failed to load brands');
+    }
+  }
+  Future<void> getHighestClothes() async {
+    var clothes_id = widget.id;
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:4000/post/highestpost/$clothes_id'),
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      List<Map<String, dynamic>> post = body.map((dynamic item) => {'id': item['id'], 'c_price': item['c_price']}).toList();
+      if (mounted) {
+        setState(() {
+          highestClothes = post;
+        });
+      }
+    } else {
+      throw Exception('Failed to load brands');
     }
   }
 }

@@ -64,8 +64,10 @@ app.post('/login', (req, res) => {
       const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: '12h' });
       res.send({ 
         message: 'Login successful', 
+        status : 'ok',
         user, 
         token 
+        
       });
     } else {
       res.status(401).send({ message: 'Invalid email or password' });
@@ -676,6 +678,53 @@ app.post('/order/ChangeStatus/admin',(req, res) => {
   });
 });
 
+app.post('/order/ChangeStatus/postuserSell/admin',(req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    const data = {
+      id: req.body.id,
+      p_status: req.body.p_status,
+    };
+    console.log(data.id);
+    console.log(`connected as id ${connection.threadId}`);
+    const sql = "UPDATE `post` SET `p_status` = ? WHERE `id` = ?";
+    pool.query(sql, [data.p_status, data.id], (error, results) => {
+      if (error) throw error;
+      res.send({ 
+        message: 'Change data successfully!',
+        data: data,
+        status: 'ok'
+      });
+    });
+    connection.release();
+  });
+});
+
+app.get('/post/lowestpost/:id', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = "SELECT * FROM `post` WHERE `c_id` = ? ORDER BY `c_price` ASC LIMIT 1";
+    pool.query(sql,[id], (err, result) => {
+      if(err) throw err;
+      res.send(result);
+    })
+    connection.release();
+  })
+})
+
+app.get('/post/highestpost/:id', (req, res) => {
+  pool.getConnection((err, connection) => {
+    if(err) throw err;
+    const { id } = req.params;
+    const sql = "SELECT * FROM `post` WHERE `c_id` = ? ORDER BY `c_price` DESC LIMIT 1";
+    pool.query(sql, [id], (err, result) => {
+      if(err) throw err;
+      res.send(result);
+    })
+    connection.release();
+  })
+})
 
 
 app.listen(port, ()=> console.log((`listen on port ${port}`)));
