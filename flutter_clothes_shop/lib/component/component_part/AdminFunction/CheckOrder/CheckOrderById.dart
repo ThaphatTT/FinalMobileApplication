@@ -68,14 +68,14 @@ class _checkOrderByIdState extends State<checkOrderById> {
             Container(
               margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
               height: 90,
-              color: Colors.amber,
+              color: Colors.grey[200],
               child : Row(
                 children: [
                   if (bytes != null) 
                   Container(
                     color: Colors.green,
                     width:  150,
-                    child: Image.memory(bytes),
+                    child: Image.memory(bytes,fit: BoxFit.cover,),
                   ),
                   Flexible(
                     child: Column(
